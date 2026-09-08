@@ -13,6 +13,7 @@ export function AuthShell({
   footer,
   showBack = true,
   showLogo = true,
+  logoClassName = "h-20 w-20",
   background = PHOTOS.windowPortrait,
 }: {
   title: string;
@@ -21,6 +22,7 @@ export function AuthShell({
   footer?: ReactNode;
   showBack?: boolean;
   showLogo?: boolean;
+  logoClassName?: string;
   background?: string;
 }) {
   const router = useRouter();
@@ -46,7 +48,7 @@ export function AuthShell({
 
         {showLogo && (
           <div className="mb-6 flex flex-col items-center">
-            <Logo className="h-20 w-20" />
+            <Logo className={logoClassName} />
             <Wordmark className="mt-1" />
           </div>
         )}

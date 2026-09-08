@@ -36,14 +36,19 @@ import { Route as BookNotesRouteImport } from './routes/book/notes'
 import { Route as BookPaymentRouteImport } from './routes/book/payment'
 import { Route as BookReviewRouteImport } from './routes/book/review'
 import { Route as BookTimeRouteImport } from './routes/book/time'
+import { Route as MessagesIndexRouteImport } from './routes/messages/index'
+import { Route as MessagesThreadIdRouteImport } from './routes/messages/$threadId'
 import { Route as MessagesChatRouteImport } from './routes/messages/chat'
 import { Route as PlansIndexRouteImport } from './routes/plans/index'
 import { Route as PlansCheckoutRouteImport } from './routes/plans/checkout'
 import { Route as PlansConfirmationRouteImport } from './routes/plans/confirmation'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
+import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
+import { Route as ResourcesResourceIdRouteImport } from './routes/resources/$resourceId'
 import { Route as SessionsRescheduleRouteImport } from './routes/sessions/reschedule'
 import { Route as WellnessHealingIndexRouteImport } from './routes/wellness-healing/index'
 import { Route as WellnessHealingSplatRouteImport } from './routes/wellness-healing/$'
+import { Route as ResourcesResourceIdPracticeRouteImport } from './routes/resources/$resourceId.practice'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -180,6 +185,16 @@ const BookTimeRoute = BookTimeRouteImport.update({
   path: '/book/time',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesIndexRoute = MessagesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MessagesRoute,
+} as any)
+const MessagesThreadIdRoute = MessagesThreadIdRouteImport.update({
+  id: '/$threadId',
+  path: '/$threadId',
+  getParentRoute: () => MessagesRoute,
+} as any)
 const MessagesChatRoute = MessagesChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -205,6 +220,16 @@ const ProfileEditRoute = ProfileEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => ProfileRoute,
 } as any)
+const ResourcesIndexRoute = ResourcesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ResourcesRoute,
+} as any)
+const ResourcesResourceIdRoute = ResourcesResourceIdRouteImport.update({
+  id: '/$resourceId',
+  path: '/$resourceId',
+  getParentRoute: () => ResourcesRoute,
+} as any)
 const SessionsRescheduleRoute = SessionsRescheduleRouteImport.update({
   id: '/reschedule',
   path: '/reschedule',
@@ -220,6 +245,12 @@ const WellnessHealingSplatRoute = WellnessHealingSplatRouteImport.update({
   path: '/wellness-healing/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResourcesResourceIdPracticeRoute =
+  ResourcesResourceIdPracticeRouteImport.update({
+    id: '/practice',
+    path: '/practice',
+    getParentRoute: () => ResourcesResourceIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -237,7 +268,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
-  '/resources': typeof ResourcesRoute
+  '/resources': typeof ResourcesRouteWithChildren
   '/sessions': typeof SessionsRouteWithChildren
   '/subscription': typeof SubscriptionRoute
   '/terms': typeof TermsRoute
@@ -248,15 +279,20 @@ export interface FileRoutesByFullPath {
   '/book/payment': typeof BookPaymentRoute
   '/book/review': typeof BookReviewRoute
   '/book/time': typeof BookTimeRoute
+  '/messages/$threadId': typeof MessagesThreadIdRoute
   '/messages/chat': typeof MessagesChatRoute
   '/plans/checkout': typeof PlansCheckoutRoute
   '/plans/confirmation': typeof PlansConfirmationRoute
   '/profile/edit': typeof ProfileEditRoute
+  '/resources/$resourceId': typeof ResourcesResourceIdRouteWithChildren
   '/sessions/reschedule': typeof SessionsRescheduleRoute
   '/wellness-healing/$': typeof WellnessHealingSplatRoute
   '/book/': typeof BookIndexRoute
+  '/messages/': typeof MessagesIndexRoute
   '/plans/': typeof PlansIndexRoute
+  '/resources/': typeof ResourcesIndexRoute
   '/wellness-healing/': typeof WellnessHealingIndexRoute
+  '/resources/$resourceId/practice': typeof ResourcesResourceIdPracticeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -265,7 +301,6 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/intake': typeof IntakeRoute
   '/login': typeof LoginRoute
-  '/messages': typeof MessagesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
   '/payment-methods': typeof PaymentMethodsRoute
@@ -274,7 +309,6 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
-  '/resources': typeof ResourcesRoute
   '/sessions': typeof SessionsRouteWithChildren
   '/subscription': typeof SubscriptionRoute
   '/terms': typeof TermsRoute
@@ -285,15 +319,20 @@ export interface FileRoutesByTo {
   '/book/payment': typeof BookPaymentRoute
   '/book/review': typeof BookReviewRoute
   '/book/time': typeof BookTimeRoute
+  '/messages/$threadId': typeof MessagesThreadIdRoute
   '/messages/chat': typeof MessagesChatRoute
   '/plans/checkout': typeof PlansCheckoutRoute
   '/plans/confirmation': typeof PlansConfirmationRoute
   '/profile/edit': typeof ProfileEditRoute
+  '/resources/$resourceId': typeof ResourcesResourceIdRouteWithChildren
   '/sessions/reschedule': typeof SessionsRescheduleRoute
   '/wellness-healing/$': typeof WellnessHealingSplatRoute
   '/book': typeof BookIndexRoute
+  '/messages': typeof MessagesIndexRoute
   '/plans': typeof PlansIndexRoute
+  '/resources': typeof ResourcesIndexRoute
   '/wellness-healing': typeof WellnessHealingIndexRoute
+  '/resources/$resourceId/practice': typeof ResourcesResourceIdPracticeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -312,7 +351,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
-  '/resources': typeof ResourcesRoute
+  '/resources': typeof ResourcesRouteWithChildren
   '/sessions': typeof SessionsRouteWithChildren
   '/subscription': typeof SubscriptionRoute
   '/terms': typeof TermsRoute
@@ -323,15 +362,20 @@ export interface FileRoutesById {
   '/book/payment': typeof BookPaymentRoute
   '/book/review': typeof BookReviewRoute
   '/book/time': typeof BookTimeRoute
+  '/messages/$threadId': typeof MessagesThreadIdRoute
   '/messages/chat': typeof MessagesChatRoute
   '/plans/checkout': typeof PlansCheckoutRoute
   '/plans/confirmation': typeof PlansConfirmationRoute
   '/profile/edit': typeof ProfileEditRoute
+  '/resources/$resourceId': typeof ResourcesResourceIdRouteWithChildren
   '/sessions/reschedule': typeof SessionsRescheduleRoute
   '/wellness-healing/$': typeof WellnessHealingSplatRoute
   '/book/': typeof BookIndexRoute
+  '/messages/': typeof MessagesIndexRoute
   '/plans/': typeof PlansIndexRoute
+  '/resources/': typeof ResourcesIndexRoute
   '/wellness-healing/': typeof WellnessHealingIndexRoute
+  '/resources/$resourceId/practice': typeof ResourcesResourceIdPracticeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -362,15 +406,20 @@ export interface FileRouteTypes {
     | '/book/payment'
     | '/book/review'
     | '/book/time'
+    | '/messages/$threadId'
     | '/messages/chat'
     | '/plans/checkout'
     | '/plans/confirmation'
     | '/profile/edit'
+    | '/resources/$resourceId'
     | '/sessions/reschedule'
     | '/wellness-healing/$'
     | '/book/'
+    | '/messages/'
     | '/plans/'
+    | '/resources/'
     | '/wellness-healing/'
+    | '/resources/$resourceId/practice'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -379,7 +428,6 @@ export interface FileRouteTypes {
     | '/home'
     | '/intake'
     | '/login'
-    | '/messages'
     | '/notifications'
     | '/onboarding'
     | '/payment-methods'
@@ -388,7 +436,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/register'
-    | '/resources'
     | '/sessions'
     | '/subscription'
     | '/terms'
@@ -399,15 +446,20 @@ export interface FileRouteTypes {
     | '/book/payment'
     | '/book/review'
     | '/book/time'
+    | '/messages/$threadId'
     | '/messages/chat'
     | '/plans/checkout'
     | '/plans/confirmation'
     | '/profile/edit'
+    | '/resources/$resourceId'
     | '/sessions/reschedule'
     | '/wellness-healing/$'
     | '/book'
+    | '/messages'
     | '/plans'
+    | '/resources'
     | '/wellness-healing'
+    | '/resources/$resourceId/practice'
   id:
     | '__root__'
     | '/'
@@ -436,15 +488,20 @@ export interface FileRouteTypes {
     | '/book/payment'
     | '/book/review'
     | '/book/time'
+    | '/messages/$threadId'
     | '/messages/chat'
     | '/plans/checkout'
     | '/plans/confirmation'
     | '/profile/edit'
+    | '/resources/$resourceId'
     | '/sessions/reschedule'
     | '/wellness-healing/$'
     | '/book/'
+    | '/messages/'
     | '/plans/'
+    | '/resources/'
     | '/wellness-healing/'
+    | '/resources/$resourceId/practice'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -463,7 +520,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRouteWithChildren
   RegisterRoute: typeof RegisterRoute
-  ResourcesRoute: typeof ResourcesRoute
+  ResourcesRoute: typeof ResourcesRouteWithChildren
   SessionsRoute: typeof SessionsRouteWithChildren
   SubscriptionRoute: typeof SubscriptionRoute
   TermsRoute: typeof TermsRoute
@@ -673,6 +730,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookTimeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages/': {
+      id: '/messages/'
+      path: '/'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof MessagesIndexRouteImport
+      parentRoute: typeof MessagesRoute
+    }
+    '/messages/$threadId': {
+      id: '/messages/$threadId'
+      path: '/$threadId'
+      fullPath: '/messages/$threadId'
+      preLoaderRoute: typeof MessagesThreadIdRouteImport
+      parentRoute: typeof MessagesRoute
+    }
     '/messages/chat': {
       id: '/messages/chat'
       path: '/chat'
@@ -708,6 +779,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof ProfileRoute
     }
+    '/resources/': {
+      id: '/resources/'
+      path: '/'
+      fullPath: '/resources/'
+      preLoaderRoute: typeof ResourcesIndexRouteImport
+      parentRoute: typeof ResourcesRoute
+    }
+    '/resources/$resourceId': {
+      id: '/resources/$resourceId'
+      path: '/$resourceId'
+      fullPath: '/resources/$resourceId'
+      preLoaderRoute: typeof ResourcesResourceIdRouteImport
+      parentRoute: typeof ResourcesRoute
+    }
     '/sessions/reschedule': {
       id: '/sessions/reschedule'
       path: '/reschedule'
@@ -729,15 +814,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WellnessHealingSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/resources/$resourceId/practice': {
+      id: '/resources/$resourceId/practice'
+      path: '/practice'
+      fullPath: '/resources/$resourceId/practice'
+      preLoaderRoute: typeof ResourcesResourceIdPracticeRouteImport
+      parentRoute: typeof ResourcesResourceIdRoute
+    }
   }
 }
 
 interface MessagesRouteChildren {
+  MessagesThreadIdRoute: typeof MessagesThreadIdRoute
   MessagesChatRoute: typeof MessagesChatRoute
+  MessagesIndexRoute: typeof MessagesIndexRoute
 }
 
 const MessagesRouteChildren: MessagesRouteChildren = {
+  MessagesThreadIdRoute: MessagesThreadIdRoute,
   MessagesChatRoute: MessagesChatRoute,
+  MessagesIndexRoute: MessagesIndexRoute,
 }
 
 const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
@@ -754,6 +850,31 @@ const ProfileRouteChildren: ProfileRouteChildren = {
 
 const ProfileRouteWithChildren =
   ProfileRoute._addFileChildren(ProfileRouteChildren)
+
+interface ResourcesResourceIdRouteChildren {
+  ResourcesResourceIdPracticeRoute: typeof ResourcesResourceIdPracticeRoute
+}
+
+const ResourcesResourceIdRouteChildren: ResourcesResourceIdRouteChildren = {
+  ResourcesResourceIdPracticeRoute: ResourcesResourceIdPracticeRoute,
+}
+
+const ResourcesResourceIdRouteWithChildren =
+  ResourcesResourceIdRoute._addFileChildren(ResourcesResourceIdRouteChildren)
+
+interface ResourcesRouteChildren {
+  ResourcesResourceIdRoute: typeof ResourcesResourceIdRouteWithChildren
+  ResourcesIndexRoute: typeof ResourcesIndexRoute
+}
+
+const ResourcesRouteChildren: ResourcesRouteChildren = {
+  ResourcesResourceIdRoute: ResourcesResourceIdRouteWithChildren,
+  ResourcesIndexRoute: ResourcesIndexRoute,
+}
+
+const ResourcesRouteWithChildren = ResourcesRoute._addFileChildren(
+  ResourcesRouteChildren,
+)
 
 interface SessionsRouteChildren {
   SessionsRescheduleRoute: typeof SessionsRescheduleRoute
@@ -783,7 +904,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRouteWithChildren,
   RegisterRoute: RegisterRoute,
-  ResourcesRoute: ResourcesRoute,
+  ResourcesRoute: ResourcesRouteWithChildren,
   SessionsRoute: SessionsRouteWithChildren,
   SubscriptionRoute: SubscriptionRoute,
   TermsRoute: TermsRoute,

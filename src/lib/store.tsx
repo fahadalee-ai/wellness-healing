@@ -13,6 +13,7 @@ import {
   type AppNotification,
   type BookingDraft,
   type ChatMessage,
+  type ChatThreadId,
   type CoachingSession,
   type IntakeAnswers,
   type Invoice,
@@ -22,6 +23,7 @@ import {
   type Subscription,
   type User,
 } from "./mock-data";
+import { normalizeMessages, replyFor } from "./chat";
 
 export type Toast = { id: number; title: string; body?: string };
 
@@ -55,7 +57,12 @@ type Store = {
   removePaymentMethod: (id: string) => void;
   invoices: Invoice[];
   messages: ChatMessage[];
-  sendMessage: (text: string) => void;
+  sendMessage: (threadId: ChatThreadId, text: string) => void;
+  markThreadRead: (threadId: ChatThreadId) => void;
+  savedResources: string[];
+  toggleSavedResource: (id: string) => void;
+  completedPractices: string[];
+  completePractice: (id: string) => void;
   notifications: AppNotification[];
   markAllRead: () => void;
   markNotificationRead: (id: string) => void;
@@ -82,6 +89,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(seedPaymentMethods);
   const [invoices] = useState<Invoice[]>(seedInvoices);
   const [messages, setMessages] = useState<ChatMessage[]>(seedMessages);
+  const [savedResources, setSavedResources] = useState<string[]>([]);
+  const [completedPractices, setCompletedPractices] = useState<string[]>([]);
   const [notifications, setNotifications] = useState<AppNotification[]>(seedNotifications);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
@@ -95,7 +104,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setDraftState(readJson("draft", {}));
     setSubscription(readJson("subscription", seedSubscription));
     setPaymentMethods(readJson("paymentMethods", seedPaymentMethods));
-    setMessages(readJson("messages", seedMessages));
+    setMessages(normalizeMessages(readJson("messages", seedMessages), seedMessages));
+    setSavedResources(readJson("savedResources", []));
+    setCompletedPractices(readJson("completedPractices", []));
     setNotifications(readJson("notifications", seedNotifications));
     setHydrated(true);
   }, []);
@@ -129,6 +140,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     writeJson("messages", messages);
   }, [hydrated, messages]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("savedResources", savedResources);
+  }, [hydrated, savedResources]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("completedPractices", completedPractices);
+  }, [hydrated, completedPractices]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -286,25 +307,47 @@ export function AppProvider({ children }: { children: ReactNode }) {
       removePaymentMethod: (id) => setPaymentMethods((list) => list.filter((m) => m.id !== id)),
       invoices,
       messages,
-      sendMessage: (text) => {
+      sendMessage: (threadId, text) => {
         const mine: ChatMessage = {
           id: `m${Date.now()}`,
+          threadId,
           from: "me",
           text,
           at: new Date().toISOString(),
+          status: "sent",
         };
         setMessages((list) => [...list, mine]);
+        const reply = replyFor(threadId, text);
         window.setTimeout(() => {
           setMessages((list) => [
-            ...list,
+            ...list.map((msg) => (msg.id === mine.id ? { ...msg, status: "read" as const } : msg)),
             {
-              id: `m${Date.now()}j`,
-              from: "jackie",
-              text: "I received this — I’ll sit with it and we can talk it through in session.",
+              id: `m${Date.now()}r`,
+              threadId,
+              from: "them",
+              text: reply.text,
               at: new Date().toISOString(),
+              status: "read",
+              resourceId: reply.resourceId,
             },
           ]);
         }, 1400);
+      },
+      markThreadRead: (threadId) => {
+        setMessages((list) =>
+          list.map((msg) =>
+            msg.threadId === threadId && msg.from === "them" ? { ...msg, status: "read" } : msg,
+          ),
+        );
+      },
+      savedResources,
+      toggleSavedResource: (id) => {
+        setSavedResources((list) => (list.includes(id) ? list.filter((item) => item !== id) : [...list, id]));
+      },
+      completedPractices,
+      completePractice: (id) => {
+        setCompletedPractices((list) => (list.includes(id) ? list : [...list, id]));
+        pushToast("Practice saved to your notes");
       },
       notifications,
       markAllRead: () => setNotifications((list) => list.map((n) => ({ ...n, read: true }))),
@@ -329,6 +372,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     paymentMethods,
     invoices,
     messages,
+    savedResources,
+    completedPractices,
     notifications,
     toasts,
   ]);

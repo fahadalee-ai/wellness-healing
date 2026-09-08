@@ -12,6 +12,7 @@ import {
   greeting,
   initials,
   PILLARS,
+  RESOURCES,
   SERVICES,
   TESTIMONIALS,
 } from "@/lib/mock-data";
@@ -193,6 +194,30 @@ function HomeScreen() {
             />
           ))}
         </div>
+      </div>
+
+      <SectionTitle
+        action={
+          <Link to="/resources" className="text-[11px] uppercase tracking-[0.14em] text-primary">
+            See all
+          </Link>
+        }
+      >
+        For the days in between
+      </SectionTitle>
+      <div className="space-y-2">
+        {RESOURCES.slice(0, 2).map((item) => (
+          <Link key={item.id} to="/resources/$resourceId" params={{ resourceId: item.id }}>
+            <Card className="flex gap-3 overflow-hidden p-0">
+              <img src={item.image} alt={item.alt} className="h-24 w-24 object-cover" />
+              <div className="min-w-0 flex-1 py-3 pr-3">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-primary">{item.category}</p>
+                <p className="mt-1 font-medium">{item.title}</p>
+                <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.excerpt}</p>
+              </div>
+            </Card>
+          </Link>
+        ))}
       </div>
 
       <LinkButton to="/book" full className="mt-8">

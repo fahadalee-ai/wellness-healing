@@ -22,7 +22,12 @@ function LoginScreen() {
   }
 
   return (
-    <AuthShell title="Welcome Back" subtitle="Log in to continue your journey" background={PHOTOS.windowPortrait}>
+    <AuthShell
+      title="Welcome Back"
+      subtitle="Log in to continue your journey"
+      background={PHOTOS.windowPortrait}
+      logoClassName="h-36 w-36"
+    >
       <form
         noValidate
         onSubmit={(e) => {

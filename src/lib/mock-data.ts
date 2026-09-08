@@ -96,11 +96,16 @@ export type Invoice = {
   label: string;
 };
 
+export type ChatThreadId = "jackie" | "studio" | "care";
+
 export type ChatMessage = {
   id: string;
-  from: "me" | "jackie";
+  threadId: ChatThreadId;
+  from: "me" | "them";
   text: string;
   at: string;
+  status?: "sent" | "read";
+  resourceId?: string;
 };
 
 export type BookingDraft = {
@@ -295,23 +300,7 @@ export const PILLARS = [
   { title: "Thoughtfully Curated", blurb: "Small, intentional offerings.", image: PHOTOS.pillarCurated },
 ] as const;
 
-export const RESOURCES = [
-  {
-    title: "A quieter morning",
-    body: "A five-minute journaling prompt for days that feel too full.",
-    image: PHOTOS.teaJournal,
-  },
-  {
-    title: "Coming back to the body",
-    body: "A short grounding practice you can do before a Zoom session.",
-    image: PHOTOS.plants,
-  },
-  {
-    title: "Between projects",
-    body: "Notes on identity, rest, and career transitions in film.",
-    image: PHOTOS.duskLandscape,
-  },
-] as const;
+export { RESOURCES, resourceById, RESOURCE_CATEGORIES, type Resource, type ResourceCategory } from "./resources";
 
 export const DEFAULT_PREFS: NotificationPrefs = {
   sessionReminders: true,
@@ -405,21 +394,44 @@ export const seedInvoices: Invoice[] = [
 export const seedMessages: ChatMessage[] = [
   {
     id: "m1",
-    from: "jackie",
+    threadId: "jackie",
+    from: "them",
     text: "Welcome, Elena. I’m glad you’re here. Whenever you’re ready, we can begin.",
     at: "2026-09-02T15:12:00",
+    status: "read",
   },
   {
     id: "m2",
+    threadId: "jackie",
     from: "me",
     text: "Thank you. I’m looking forward to Friday.",
     at: "2026-09-02T16:40:00",
+    status: "read",
   },
   {
     id: "m3",
-    from: "jackie",
+    threadId: "jackie",
+    from: "them",
     text: "I’ll send the Zoom link the day before. Rest well until then.",
     at: "2026-09-02T16:48:00",
+    status: "read",
+  },
+  {
+    id: "s1",
+    threadId: "studio",
+    from: "them",
+    text: "Your session with Jackie is Friday, September 12 at 10:00 AM. The Zoom link will arrive 24 hours before.",
+    at: "2026-09-06T09:15:00",
+    status: "sent",
+  },
+  {
+    id: "c1",
+    threadId: "care",
+    from: "them",
+    text: "Jackie shared a short grounding practice for the days between sessions.",
+    at: "2026-09-05T18:22:00",
+    status: "sent",
+    resourceId: "coming-back",
   },
 ];
 
