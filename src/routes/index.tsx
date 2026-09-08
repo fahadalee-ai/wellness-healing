@@ -1,30 +1,49 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Logo, Wordmark } from "@/components/Logo";
+import { PHOTOS } from "@/lib/images";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [
-      { title: "Project Start Here" },
-      {
-        name: "description",
-        content: "Clean mobile app starter. This is the starting point for a new project.",
-      },
-    ],
+    meta: [{ title: "Wellness & Healing SF" }],
   }),
-  component: StartScreen,
+  component: SplashScreen,
 });
 
-function StartScreen() {
+function SplashScreen() {
+  const navigate = useNavigate();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setReady(true), 2000);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    navigate({ to: "/onboarding" });
+  }, [ready, navigate]);
+
+  function advance() {
+    setReady(true);
+  }
+
   return (
-    <div className="flex min-h-dvh flex-col justify-center px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(2rem,env(safe-area-inset-top))]">
-      <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-        Clean Mobile App Starter
-      </p>
-      <h1 className="mt-3 text-[2rem] font-semibold leading-tight tracking-tight text-foreground">
-        Project Start Here
-      </h1>
-      <p className="mt-3 max-w-[17.5rem] text-[15px] leading-relaxed text-muted-foreground">
-        This is the starting point for a new project.
-      </p>
-    </div>
+    <button
+      type="button"
+      onClick={advance}
+      className="relative flex min-h-dvh w-full flex-col items-center justify-center overflow-hidden bg-background px-6"
+    >
+      <img
+        src={PHOTOS.splash}
+        alt="Sunroom window with plants and warm daylight"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-[#2D2B29]/72" />
+      <div className="relative z-10 animate-splash flex flex-col items-center">
+        <Logo className="h-44 w-44" />
+        <Wordmark className="mt-3" />
+      </div>
+    </button>
   );
 }

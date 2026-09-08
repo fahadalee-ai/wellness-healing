@@ -1,0 +1,151 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { Button, FadeIn, MenuSelect, ProgressBar } from "@/components/kit";
+import { INTAKE_BACKGROUNDS, INTAKE_REASONS, INTAKE_REFERRALS, INTAKE_SUPPORT } from "@/lib/mock-data";
+import { useApp } from "@/lib/store";
+import { cn } from "@/lib/utils";
+
+export const Route = createFileRoute("/intake")({
+  head: () => ({ meta: [{ title: "A few questions — Wellness & Healing SF" }] }),
+  component: IntakeScreen,
+});
+
+function IntakeScreen() {
+  const { completeIntake } = useApp();
+  const navigate = useNavigate();
+  const [step, setStep] = useState(0);
+  const [reason, setReason] = useState("");
+  const [background, setBackground] = useState("");
+  const [support, setSupport] = useState<string[]>([]);
+  const [referral, setReferral] = useState("");
+
+  const total = 4;
+  const canContinue =
+    (step === 0 && !!reason) ||
+    step === 1 ||
+    (step === 2 && support.length > 0) ||
+    step === 3;
+
+  function next() {
+    if (step < total - 1) {
+      setStep((s) => s + 1);
+      return;
+    }
+    completeIntake({ reason, background, support, referral });
+    navigate({ to: "/home" });
+  }
+
+  return (
+    <div className="min-h-dvh overflow-visible bg-background px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
+      <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        {step + 1} of {total}
+      </p>
+      <div className="mt-3">
+        <ProgressBar value={step + 1} max={total} />
+      </div>
+
+      <FadeIn key={step} className="mt-8">
+        {step === 0 && (
+          <Question title="What brings you here today?">
+            <ChoiceList options={INTAKE_REASONS} value={reason} onChange={setReason} />
+          </Question>
+        )}
+        {step === 1 && (
+          <Question title="How would you describe your background?" optional>
+            <ChoiceList options={INTAKE_BACKGROUNDS} value={background} onChange={setBackground} />
+          </Question>
+        )}
+        {step === 2 && (
+          <Question title="What kind of support are you looking for?">
+            <ChoiceList
+              options={INTAKE_SUPPORT}
+              value={support}
+              multiple
+              onChange={(v) =>
+                setSupport((curr) => (curr.includes(v) ? curr.filter((x) => x !== v) : [...curr, v]))
+              }
+            />
+          </Question>
+        )}
+        {step === 3 && (
+          <Question title="How did you hear about Wellness & Healing SF?" optional>
+            <MenuSelect value={referral} options={INTAKE_REFERRALS} onChange={setReferral} />
+          </Question>
+        )}
+      </FadeIn>
+
+      <div className="mt-10">
+        <Button full disabled={!canContinue} onClick={next}>
+          {step === total - 1 ? "Continue to Home" : "Continue"}
+        </Button>
+        {step === 1 && (
+          <button
+            type="button"
+            onClick={next}
+            className="mt-3 w-full py-3 text-center text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
+          >
+            Skip
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Question({
+  title,
+  optional,
+  children,
+}: {
+  title: string;
+  optional?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <h1 className="font-display text-[1.85rem] leading-tight text-foreground">{title}</h1>
+      {optional && <p className="mt-2 text-sm text-muted-foreground">Optional — skip if you’d rather not say.</p>}
+      <div className="mt-6">{children}</div>
+    </>
+  );
+}
+
+function ChoiceList({
+  options,
+  value,
+  onChange,
+  multiple,
+}: {
+  options: readonly string[];
+  value: string | string[];
+  onChange: (v: string) => void;
+  multiple?: boolean;
+}) {
+  return (
+    <div className="space-y-2">
+      {options.map((opt) => {
+        const selected = Array.isArray(value) ? value.includes(opt) : value === opt;
+        return (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => onChange(opt)}
+            className={cn(
+              "flex min-h-12 w-full items-center justify-between border px-4 py-3 text-left text-sm transition-colors duration-200",
+              selected ? "border-primary bg-primary/10 text-foreground" : "border-border bg-card text-cream",
+            )}
+          >
+            {opt}
+            <span
+              className={cn(
+                "h-4 w-4 border",
+                multiple ? "" : "rounded-full",
+                selected ? "border-primary bg-primary" : "border-stone",
+              )}
+            />
+          </button>
+        );
+      })}
+    </div>
+  );
+}

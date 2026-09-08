@@ -1,25 +1,32 @@
 import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, ChevronRight, X } from "lucide-react";
-import type { ReactNode } from "react";
+import { ArrowLeft, ChevronDown, ChevronRight, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import type {
+  ButtonHTMLAttributes,
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
 import { cn } from "@/lib/utils";
 
 export function Screen({
   children,
   className,
-  dark,
   padded = true,
+  tabPad,
 }: {
   children: ReactNode;
   className?: string;
-  dark?: boolean;
   padded?: boolean;
+  tabPad?: boolean;
 }) {
   return (
     <div
       className={cn(
-        "min-h-dvh",
-        dark ? "bg-ink text-white" : "bg-background text-foreground",
-        padded && "px-4 py-4",
+        "min-h-dvh bg-background text-foreground",
+        padded && "px-5 py-5",
+        tabPad && "pb-[calc(5.5rem+env(safe-area-inset-bottom))]",
         className,
       )}
     >
@@ -28,48 +35,41 @@ export function Screen({
   );
 }
 
+export function FadeIn({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={cn("animate-fade-up", className)}>{children}</div>;
+}
+
 export function Header({
   title,
   subtitle,
   back = true,
   right,
-  dark,
-  fallbackTo = "/",
+  fallbackTo = "/home",
 }: {
   title: string;
   subtitle?: string;
   back?: boolean;
   right?: ReactNode;
-  dark?: boolean;
   fallbackTo?: string;
 }) {
   const router = useRouter();
   const canGoBack = useCanGoBack();
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-30 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3",
-        dark ? "bg-ink text-white" : "bg-background text-foreground",
-      )}
-    >
+    <header className="sticky top-0 z-30 -mx-5 mb-5 bg-background/95 px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
       <div className="flex items-center gap-3">
         {back && (
           <button
+            type="button"
             aria-label="Go back"
             onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: fallbackTo as "/" }))}
-            className={cn(
-              "flex h-11 w-11 items-center justify-center rounded-xl border transition-colors",
-              dark
-                ? "border-white/25 text-white hover:bg-white/10"
-                : "border-border text-foreground hover:bg-muted",
-            )}
+            className="flex h-12 w-12 items-center justify-center border border-border text-foreground transition-colors hover:bg-muted"
           >
-            <ArrowLeft size={18} strokeWidth={2} />
+            <ArrowLeft size={18} strokeWidth={1.75} />
           </button>
         )}
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-xl font-semibold tracking-tight">{title}</h1>
-          {subtitle && <p className={cn("truncate text-xs", dark ? "text-white/70" : "text-muted-foreground")}>{subtitle}</p>}
+          <h1 className="truncate font-display text-[1.65rem] font-medium tracking-tight">{title}</h1>
+          {subtitle && <p className="mt-0.5 truncate text-xs text-muted-foreground">{subtitle}</p>}
         </div>
         {right}
       </div>
@@ -83,23 +83,22 @@ export function Button({
   full,
   className,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "outline" | "dark" | "danger" | "ghost" | "light";
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: "primary" | "outline" | "ghost" | "danger" | "soft";
   full?: boolean;
 }) {
   const styles = {
     primary: "bg-primary text-primary-foreground hover:bg-primary-dark",
-    outline: "border border-border bg-card text-foreground hover:bg-muted",
-    light: "border border-white/40 bg-transparent text-white hover:bg-white/10",
-    dark: "bg-ink text-white hover:bg-primary-dark",
-    danger: "bg-danger text-white hover:opacity-90",
-    ghost: "text-primary hover:bg-primary/10",
+    outline: "border border-primary bg-transparent text-primary hover:bg-primary/10",
+    ghost: "bg-transparent text-cream hover:bg-muted",
+    danger: "bg-transparent text-danger hover:bg-danger/10",
+    soft: "border border-border bg-card text-foreground hover:bg-muted",
   }[variant];
   return (
     <button
       {...props}
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold tracking-tight transition-colors disabled:opacity-50",
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-none px-4 py-3 text-[12px] font-medium uppercase tracking-[0.16em] transition-colors duration-200 disabled:opacity-40",
         styles,
         full && "w-full",
         className,
@@ -113,6 +112,7 @@ export function Button({
 export function LinkButton({
   to,
   params,
+  search,
   children,
   variant = "primary",
   full,
@@ -120,24 +120,25 @@ export function LinkButton({
 }: {
   to: string;
   params?: Record<string, string>;
+  search?: Record<string, string | undefined>;
   children: ReactNode;
-  variant?: "primary" | "outline" | "dark" | "danger" | "light";
+  variant?: "primary" | "outline" | "ghost" | "soft";
   full?: boolean;
   className?: string;
 }) {
   const styles = {
     primary: "bg-primary text-primary-foreground hover:bg-primary-dark",
-    outline: "border border-border bg-card text-foreground hover:bg-muted",
-    light: "border border-white/40 text-white hover:bg-white/10",
-    dark: "bg-ink text-white hover:bg-primary-dark",
-    danger: "bg-danger text-white hover:opacity-90",
+    outline: "border border-primary bg-transparent text-primary hover:bg-primary/10",
+    ghost: "bg-transparent text-cream hover:bg-muted",
+    soft: "border border-border bg-card text-foreground hover:bg-muted",
   }[variant];
   return (
     <Link
       to={to as "/"}
       params={params}
+      search={search}
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-3 text-center text-sm font-semibold tracking-tight transition-colors",
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-none px-4 py-3 text-center text-[12px] font-medium uppercase tracking-[0.16em] transition-colors duration-200",
         styles,
         full && "w-full",
         className,
@@ -152,17 +153,20 @@ export function Card({
   children,
   className,
   onClick,
+  selected,
 }: {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
+  selected?: boolean;
 }) {
   return (
     <div
       onClick={onClick}
       className={cn(
-        "rounded-xl border border-border bg-card p-4",
-        onClick && "cursor-pointer transition-colors hover:border-foreground/20",
+        "rounded-[4px] border bg-card p-4",
+        selected ? "border-primary" : "border-border",
+        onClick && "cursor-pointer transition-colors duration-200 hover:border-primary/50",
         className,
       )}
     >
@@ -173,49 +177,11 @@ export function Card({
 
 export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="mb-2 mt-6 flex items-end justify-between first:mt-0">
-      <h2 className="text-lg font-semibold tracking-tight text-foreground">{children}</h2>
+    <div className="mb-3 mt-8 flex items-end justify-between first:mt-0">
+      <h2 className="font-display text-xl font-medium tracking-tight text-foreground">{children}</h2>
       {action}
     </div>
   );
-}
-
-const chipTone: Record<string, string> = {
-  primary: "bg-primary text-primary-foreground",
-  success: "bg-success text-white",
-  warning: "bg-warning text-white",
-  danger: "bg-danger text-white",
-  neutral: "bg-ink text-white",
-  muted: "border border-border bg-muted text-muted-foreground",
-};
-
-export function Chip({
-  children,
-  tone = "muted",
-  className,
-}: {
-  children: ReactNode;
-  tone?: keyof typeof chipTone;
-  className?: string;
-}) {
-  return (
-    <span
-      className={cn(
-        "inline-block rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wide",
-        chipTone[tone],
-        className,
-      )}
-    >
-      {children}
-    </span>
-  );
-}
-
-export function statusTone(status: string): keyof typeof chipTone {
-  if (["Completed", "Paid", "Approved", "Active", "Confirmed"].includes(status)) return "success";
-  if (["Pending", "Submitted", "ExpiringSoon", "Unpaid", "Soon"].includes(status)) return "warning";
-  if (["Overdue", "Cancelled", "Rejected", "Expired", "Emergency"].includes(status)) return "danger";
-  return "primary";
 }
 
 export function Field({
@@ -231,29 +197,93 @@ export function Field({
 }) {
   return (
     <label className="mb-4 block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
         {label}
       </span>
       {children}
-      {hint && !error && <span className="mt-1 block text-xs text-muted-foreground">{hint}</span>}
-      {error && <span className="mt-1 block text-xs font-medium text-danger">{error}</span>}
+      {hint && !error && <span className="mt-1.5 block text-xs text-muted-foreground">{hint}</span>}
+      {error && <span className="mt-1.5 block text-xs text-warning">{error}</span>}
     </label>
   );
 }
 
 export const inputClass =
-  "w-full rounded-xl border border-border bg-card px-3 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-foreground/40";
+  "w-full min-h-12 rounded-none border border-border bg-card px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary";
 
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={cn(inputClass, props.className)} />;
 }
 
-export function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea {...props} className={cn(inputClass, "min-h-28", props.className)} />;
+export function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return <textarea {...props} className={cn(inputClass, "min-h-32", props.className)} />;
 }
 
-export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return <select {...props} className={cn(inputClass, props.className)} />;
+}
+
+export function MenuSelect({
+  value,
+  options,
+  onChange,
+  placeholder = "Select one",
+}: {
+  value: string;
+  options: readonly string[];
+  onChange: (value: string) => void;
+  placeholder?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  return (
+    <div ref={rootRef} className="relative z-20 w-full">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={cn(inputClass, "flex items-center justify-between text-left")}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+      >
+        <span className={value ? "text-foreground" : "text-muted-foreground"}>{value || placeholder}</span>
+        <ChevronDown size={16} className={cn("shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
+      </button>
+      {open && (
+        <ul
+          role="listbox"
+          className="absolute left-0 right-0 top-full z-30 mt-1 max-h-56 overflow-y-auto border border-border bg-card no-scrollbar"
+        >
+          {options.map((opt) => (
+            <li key={opt}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={value === opt}
+                onClick={() => {
+                  onChange(opt);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex min-h-12 w-full items-center px-4 text-left text-sm",
+                  value === opt ? "bg-primary/15 text-foreground" : "text-cream hover:bg-muted",
+                )}
+              >
+                {opt}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }
 
 export function Row({
@@ -280,42 +310,15 @@ export function Row({
     </>
   );
   const cls =
-    "flex w-full items-center gap-3 border-b border-border bg-card px-4 py-4 text-left transition-colors hover:bg-muted";
+    "flex w-full min-h-12 items-center gap-3 border-b border-border bg-transparent px-1 py-4 text-left transition-colors hover:bg-muted/40";
   return to ? (
     <Link to={to as "/"} params={params} className={cls}>
       {inner}
     </Link>
   ) : (
-    <button onClick={onClick} className={cls}>
+    <button type="button" onClick={onClick} className={cls}>
       {inner}
     </button>
-  );
-}
-
-export function Stepper({ steps, current }: { steps: string[]; current: number }) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      {steps.map((s, i) => (
-        <div key={s} className="flex gap-3">
-          <div className="flex flex-col items-center">
-            <div
-              className={cn(
-                "flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold",
-                i <= current ? "bg-primary text-primary-foreground" : "border border-border bg-muted text-muted-foreground",
-              )}
-            >
-              {i + 1}
-            </div>
-            {i < steps.length - 1 && (
-              <div className={cn("w-px flex-1", i < current ? "bg-primary" : "bg-border")} />
-            )}
-          </div>
-          <div className={cn("pb-5 text-sm", i <= current ? "font-semibold text-foreground" : "text-muted-foreground")}>
-            {s}
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }
 
@@ -332,14 +335,14 @@ export function BottomSheet({
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/60" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/70" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[480px] rounded-t-2xl border-t border-border bg-card p-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
+        className="w-full max-w-[480px] border-t border-border bg-card p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
       >
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-xl font-semibold tracking-tight text-foreground">{title}</h3>
-          <button aria-label="Close" onClick={onClose} className="p-1 text-muted-foreground">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-display text-2xl text-foreground">{title}</h3>
+          <button type="button" aria-label="Close" onClick={onClose} className="p-2 text-muted-foreground">
             <X size={18} />
           </button>
         </div>
@@ -349,29 +352,72 @@ export function BottomSheet({
   );
 }
 
-export function Empty({ title, body, action }: { title: string; body: string; action?: ReactNode }) {
+export function Empty({ title, body, action }: { title: string; body?: string; action?: ReactNode }) {
   return (
-    <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
-      <h3 className="text-xl font-semibold tracking-tight text-foreground">{title}</h3>
-      <p className="mx-auto mt-2 max-w-xs text-sm text-muted-foreground">{body}</p>
-      {action && <div className="mt-4">{action}</div>}
+    <div className="rounded-[4px] border border-dashed border-border bg-card px-6 py-10 text-center">
+      <h3 className="font-display text-xl text-foreground">{title}</h3>
+      {body && <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">{body}</p>}
+      {action && <div className="mt-5">{action}</div>}
     </div>
   );
 }
 
 export function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
   return (
-    <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground">
+    <span className="inline-flex items-center gap-1 text-xs text-cream">
       <span className="inline-flex">
         {[0, 1, 2, 3, 4].map((i) => (
           <span
             key={i}
             style={{ width: size, height: size }}
-            className={cn("mr-0.5 inline-block rounded-sm", i < Math.round(rating) ? "bg-primary" : "bg-border")}
+            className={cn("mr-0.5 inline-block", i < Math.round(rating) ? "bg-primary" : "bg-border")}
           />
         ))}
       </span>
-      {rating.toFixed(1)}
     </span>
+  );
+}
+
+export function ProgressBar({ value, max = 100 }: { value: number; max?: number }) {
+  const pct = Math.min(100, Math.max(0, (value / max) * 100));
+  return (
+    <div className="h-1.5 w-full bg-muted">
+      <div className="h-full bg-primary transition-[width] duration-300" style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
+
+export function SuccessState({
+  heading,
+  subtext,
+  children,
+}: {
+  heading: string;
+  subtext?: string;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="flex min-h-[70dvh] flex-col items-center justify-center px-2 text-center">
+      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path d="M5 12.5 9.5 17 19 7" stroke="#F5F3EF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <h1 className="mt-6 font-display text-3xl text-foreground">{heading}</h1>
+      {subtext && <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">{subtext}</p>}
+      {children && <div className="mt-8 w-full">{children}</div>}
+    </div>
+  );
+}
+
+export function SaveLater({ onSave }: { onSave: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onSave}
+      className="mt-3 w-full py-3 text-center text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
+    >
+      Save for later
+    </button>
   );
 }

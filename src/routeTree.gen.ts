@@ -10,33 +10,424 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as HelpRouteImport } from './routes/help'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as IntakeRouteImport } from './routes/intake'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PaymentMethodsRouteImport } from './routes/payment-methods'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as SessionsRouteImport } from './routes/sessions'
+import { Route as SubscriptionRouteImport } from './routes/subscription'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as BookIndexRouteImport } from './routes/book/index'
+import { Route as BookConfirmationRouteImport } from './routes/book/confirmation'
+import { Route as BookDateRouteImport } from './routes/book/date'
+import { Route as BookFocusRouteImport } from './routes/book/focus'
+import { Route as BookNotesRouteImport } from './routes/book/notes'
+import { Route as BookPaymentRouteImport } from './routes/book/payment'
+import { Route as BookReviewRouteImport } from './routes/book/review'
+import { Route as BookTimeRouteImport } from './routes/book/time'
+import { Route as MessagesChatRouteImport } from './routes/messages/chat'
+import { Route as PlansIndexRouteImport } from './routes/plans/index'
+import { Route as PlansCheckoutRouteImport } from './routes/plans/checkout'
+import { Route as PlansConfirmationRouteImport } from './routes/plans/confirmation'
+import { Route as ProfileEditRouteImport } from './routes/profile/edit'
+import { Route as SessionsRescheduleRouteImport } from './routes/sessions/reschedule'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntakeRoute = IntakeRouteImport.update({
+  id: '/intake',
+  path: '/intake',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentMethodsRoute = PaymentMethodsRouteImport.update({
+  id: '/payment-methods',
+  path: '/payment-methods',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SessionsRoute = SessionsRouteImport.update({
+  id: '/sessions',
+  path: '/sessions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionRoute = SubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookIndexRoute = BookIndexRouteImport.update({
+  id: '/book/',
+  path: '/book/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookConfirmationRoute = BookConfirmationRouteImport.update({
+  id: '/book/confirmation',
+  path: '/book/confirmation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookDateRoute = BookDateRouteImport.update({
+  id: '/book/date',
+  path: '/book/date',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookFocusRoute = BookFocusRouteImport.update({
+  id: '/book/focus',
+  path: '/book/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookNotesRoute = BookNotesRouteImport.update({
+  id: '/book/notes',
+  path: '/book/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookPaymentRoute = BookPaymentRouteImport.update({
+  id: '/book/payment',
+  path: '/book/payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookReviewRoute = BookReviewRouteImport.update({
+  id: '/book/review',
+  path: '/book/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookTimeRoute = BookTimeRouteImport.update({
+  id: '/book/time',
+  path: '/book/time',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesChatRoute = MessagesChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => MessagesRoute,
+} as any)
+const PlansIndexRoute = PlansIndexRouteImport.update({
+  id: '/plans/',
+  path: '/plans/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlansCheckoutRoute = PlansCheckoutRouteImport.update({
+  id: '/plans/checkout',
+  path: '/plans/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlansConfirmationRoute = PlansConfirmationRouteImport.update({
+  id: '/plans/confirmation',
+  path: '/plans/confirmation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileEditRoute = ProfileEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => ProfileRoute,
+} as any)
+const SessionsRescheduleRoute = SessionsRescheduleRouteImport.update({
+  id: '/reschedule',
+  path: '/reschedule',
+  getParentRoute: () => SessionsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
+  '/home': typeof HomeRoute
+  '/intake': typeof IntakeRoute
+  '/login': typeof LoginRoute
+  '/messages': typeof MessagesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/payment-methods': typeof PaymentMethodsRoute
+  '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRouteWithChildren
+  '/register': typeof RegisterRoute
+  '/resources': typeof ResourcesRoute
+  '/sessions': typeof SessionsRouteWithChildren
+  '/subscription': typeof SubscriptionRoute
+  '/terms': typeof TermsRoute
+  '/book/confirmation': typeof BookConfirmationRoute
+  '/book/date': typeof BookDateRoute
+  '/book/focus': typeof BookFocusRoute
+  '/book/notes': typeof BookNotesRoute
+  '/book/payment': typeof BookPaymentRoute
+  '/book/review': typeof BookReviewRoute
+  '/book/time': typeof BookTimeRoute
+  '/messages/chat': typeof MessagesChatRoute
+  '/plans/checkout': typeof PlansCheckoutRoute
+  '/plans/confirmation': typeof PlansConfirmationRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/sessions/reschedule': typeof SessionsRescheduleRoute
+  '/book/': typeof BookIndexRoute
+  '/plans/': typeof PlansIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
+  '/home': typeof HomeRoute
+  '/intake': typeof IntakeRoute
+  '/login': typeof LoginRoute
+  '/messages': typeof MessagesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/payment-methods': typeof PaymentMethodsRoute
+  '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRouteWithChildren
+  '/register': typeof RegisterRoute
+  '/resources': typeof ResourcesRoute
+  '/sessions': typeof SessionsRouteWithChildren
+  '/subscription': typeof SubscriptionRoute
+  '/terms': typeof TermsRoute
+  '/book/confirmation': typeof BookConfirmationRoute
+  '/book/date': typeof BookDateRoute
+  '/book/focus': typeof BookFocusRoute
+  '/book/notes': typeof BookNotesRoute
+  '/book/payment': typeof BookPaymentRoute
+  '/book/review': typeof BookReviewRoute
+  '/book/time': typeof BookTimeRoute
+  '/messages/chat': typeof MessagesChatRoute
+  '/plans/checkout': typeof PlansCheckoutRoute
+  '/plans/confirmation': typeof PlansConfirmationRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/sessions/reschedule': typeof SessionsRescheduleRoute
+  '/book': typeof BookIndexRoute
+  '/plans': typeof PlansIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
+  '/home': typeof HomeRoute
+  '/intake': typeof IntakeRoute
+  '/login': typeof LoginRoute
+  '/messages': typeof MessagesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/payment-methods': typeof PaymentMethodsRoute
+  '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRouteWithChildren
+  '/register': typeof RegisterRoute
+  '/resources': typeof ResourcesRoute
+  '/sessions': typeof SessionsRouteWithChildren
+  '/subscription': typeof SubscriptionRoute
+  '/terms': typeof TermsRoute
+  '/book/confirmation': typeof BookConfirmationRoute
+  '/book/date': typeof BookDateRoute
+  '/book/focus': typeof BookFocusRoute
+  '/book/notes': typeof BookNotesRoute
+  '/book/payment': typeof BookPaymentRoute
+  '/book/review': typeof BookReviewRoute
+  '/book/time': typeof BookTimeRoute
+  '/messages/chat': typeof MessagesChatRoute
+  '/plans/checkout': typeof PlansCheckoutRoute
+  '/plans/confirmation': typeof PlansConfirmationRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/sessions/reschedule': typeof SessionsRescheduleRoute
+  '/book/': typeof BookIndexRoute
+  '/plans/': typeof PlansIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/forgot-password'
+    | '/help'
+    | '/home'
+    | '/intake'
+    | '/login'
+    | '/messages'
+    | '/notifications'
+    | '/onboarding'
+    | '/payment-methods'
+    | '/privacy'
+    | '/profile'
+    | '/register'
+    | '/resources'
+    | '/sessions'
+    | '/subscription'
+    | '/terms'
+    | '/book/confirmation'
+    | '/book/date'
+    | '/book/focus'
+    | '/book/notes'
+    | '/book/payment'
+    | '/book/review'
+    | '/book/time'
+    | '/messages/chat'
+    | '/plans/checkout'
+    | '/plans/confirmation'
+    | '/profile/edit'
+    | '/sessions/reschedule'
+    | '/book/'
+    | '/plans/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/forgot-password'
+    | '/help'
+    | '/home'
+    | '/intake'
+    | '/login'
+    | '/messages'
+    | '/notifications'
+    | '/onboarding'
+    | '/payment-methods'
+    | '/privacy'
+    | '/profile'
+    | '/register'
+    | '/resources'
+    | '/sessions'
+    | '/subscription'
+    | '/terms'
+    | '/book/confirmation'
+    | '/book/date'
+    | '/book/focus'
+    | '/book/notes'
+    | '/book/payment'
+    | '/book/review'
+    | '/book/time'
+    | '/messages/chat'
+    | '/plans/checkout'
+    | '/plans/confirmation'
+    | '/profile/edit'
+    | '/sessions/reschedule'
+    | '/book'
+    | '/plans'
+  id:
+    | '__root__'
+    | '/'
+    | '/forgot-password'
+    | '/help'
+    | '/home'
+    | '/intake'
+    | '/login'
+    | '/messages'
+    | '/notifications'
+    | '/onboarding'
+    | '/payment-methods'
+    | '/privacy'
+    | '/profile'
+    | '/register'
+    | '/resources'
+    | '/sessions'
+    | '/subscription'
+    | '/terms'
+    | '/book/confirmation'
+    | '/book/date'
+    | '/book/focus'
+    | '/book/notes'
+    | '/book/payment'
+    | '/book/review'
+    | '/book/time'
+    | '/messages/chat'
+    | '/plans/checkout'
+    | '/plans/confirmation'
+    | '/profile/edit'
+    | '/sessions/reschedule'
+    | '/book/'
+    | '/plans/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  HelpRoute: typeof HelpRoute
+  HomeRoute: typeof HomeRoute
+  IntakeRoute: typeof IntakeRoute
+  LoginRoute: typeof LoginRoute
+  MessagesRoute: typeof MessagesRouteWithChildren
+  NotificationsRoute: typeof NotificationsRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PaymentMethodsRoute: typeof PaymentMethodsRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ProfileRoute: typeof ProfileRouteWithChildren
+  RegisterRoute: typeof RegisterRoute
+  ResourcesRoute: typeof ResourcesRoute
+  SessionsRoute: typeof SessionsRouteWithChildren
+  SubscriptionRoute: typeof SubscriptionRoute
+  TermsRoute: typeof TermsRoute
+  BookConfirmationRoute: typeof BookConfirmationRoute
+  BookDateRoute: typeof BookDateRoute
+  BookFocusRoute: typeof BookFocusRoute
+  BookNotesRoute: typeof BookNotesRoute
+  BookPaymentRoute: typeof BookPaymentRoute
+  BookReviewRoute: typeof BookReviewRoute
+  BookTimeRoute: typeof BookTimeRoute
+  PlansCheckoutRoute: typeof PlansCheckoutRoute
+  PlansConfirmationRoute: typeof PlansConfirmationRoute
+  BookIndexRoute: typeof BookIndexRoute
+  PlansIndexRoute: typeof PlansIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +439,283 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/intake': {
+      id: '/intake'
+      path: '/intake'
+      fullPath: '/intake'
+      preLoaderRoute: typeof IntakeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-methods': {
+      id: '/payment-methods'
+      path: '/payment-methods'
+      fullPath: '/payment-methods'
+      preLoaderRoute: typeof PaymentMethodsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sessions': {
+      id: '/sessions'
+      path: '/sessions'
+      fullPath: '/sessions'
+      preLoaderRoute: typeof SessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscription': {
+      id: '/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof SubscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/': {
+      id: '/book/'
+      path: '/book'
+      fullPath: '/book/'
+      preLoaderRoute: typeof BookIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/confirmation': {
+      id: '/book/confirmation'
+      path: '/book/confirmation'
+      fullPath: '/book/confirmation'
+      preLoaderRoute: typeof BookConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/date': {
+      id: '/book/date'
+      path: '/book/date'
+      fullPath: '/book/date'
+      preLoaderRoute: typeof BookDateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/focus': {
+      id: '/book/focus'
+      path: '/book/focus'
+      fullPath: '/book/focus'
+      preLoaderRoute: typeof BookFocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/notes': {
+      id: '/book/notes'
+      path: '/book/notes'
+      fullPath: '/book/notes'
+      preLoaderRoute: typeof BookNotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/payment': {
+      id: '/book/payment'
+      path: '/book/payment'
+      fullPath: '/book/payment'
+      preLoaderRoute: typeof BookPaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/review': {
+      id: '/book/review'
+      path: '/book/review'
+      fullPath: '/book/review'
+      preLoaderRoute: typeof BookReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/time': {
+      id: '/book/time'
+      path: '/book/time'
+      fullPath: '/book/time'
+      preLoaderRoute: typeof BookTimeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages/chat': {
+      id: '/messages/chat'
+      path: '/chat'
+      fullPath: '/messages/chat'
+      preLoaderRoute: typeof MessagesChatRouteImport
+      parentRoute: typeof MessagesRoute
+    }
+    '/plans/': {
+      id: '/plans/'
+      path: '/plans'
+      fullPath: '/plans/'
+      preLoaderRoute: typeof PlansIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plans/checkout': {
+      id: '/plans/checkout'
+      path: '/plans/checkout'
+      fullPath: '/plans/checkout'
+      preLoaderRoute: typeof PlansCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plans/confirmation': {
+      id: '/plans/confirmation'
+      path: '/plans/confirmation'
+      fullPath: '/plans/confirmation'
+      preLoaderRoute: typeof PlansConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/edit': {
+      id: '/profile/edit'
+      path: '/edit'
+      fullPath: '/profile/edit'
+      preLoaderRoute: typeof ProfileEditRouteImport
+      parentRoute: typeof ProfileRoute
+    }
+    '/sessions/reschedule': {
+      id: '/sessions/reschedule'
+      path: '/reschedule'
+      fullPath: '/sessions/reschedule'
+      preLoaderRoute: typeof SessionsRescheduleRouteImport
+      parentRoute: typeof SessionsRoute
+    }
   }
 }
 
+interface MessagesRouteChildren {
+  MessagesChatRoute: typeof MessagesChatRoute
+}
+
+const MessagesRouteChildren: MessagesRouteChildren = {
+  MessagesChatRoute: MessagesChatRoute,
+}
+
+const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
+  MessagesRouteChildren,
+)
+
+interface ProfileRouteChildren {
+  ProfileEditRoute: typeof ProfileEditRoute
+}
+
+const ProfileRouteChildren: ProfileRouteChildren = {
+  ProfileEditRoute: ProfileEditRoute,
+}
+
+const ProfileRouteWithChildren =
+  ProfileRoute._addFileChildren(ProfileRouteChildren)
+
+interface SessionsRouteChildren {
+  SessionsRescheduleRoute: typeof SessionsRescheduleRoute
+}
+
+const SessionsRouteChildren: SessionsRouteChildren = {
+  SessionsRescheduleRoute: SessionsRescheduleRoute,
+}
+
+const SessionsRouteWithChildren = SessionsRoute._addFileChildren(
+  SessionsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  HelpRoute: HelpRoute,
+  HomeRoute: HomeRoute,
+  IntakeRoute: IntakeRoute,
+  LoginRoute: LoginRoute,
+  MessagesRoute: MessagesRouteWithChildren,
+  NotificationsRoute: NotificationsRoute,
+  OnboardingRoute: OnboardingRoute,
+  PaymentMethodsRoute: PaymentMethodsRoute,
+  PrivacyRoute: PrivacyRoute,
+  ProfileRoute: ProfileRouteWithChildren,
+  RegisterRoute: RegisterRoute,
+  ResourcesRoute: ResourcesRoute,
+  SessionsRoute: SessionsRouteWithChildren,
+  SubscriptionRoute: SubscriptionRoute,
+  TermsRoute: TermsRoute,
+  BookConfirmationRoute: BookConfirmationRoute,
+  BookDateRoute: BookDateRoute,
+  BookFocusRoute: BookFocusRoute,
+  BookNotesRoute: BookNotesRoute,
+  BookPaymentRoute: BookPaymentRoute,
+  BookReviewRoute: BookReviewRoute,
+  BookTimeRoute: BookTimeRoute,
+  PlansCheckoutRoute: PlansCheckoutRoute,
+  PlansConfirmationRoute: PlansConfirmationRoute,
+  BookIndexRoute: BookIndexRoute,
+  PlansIndexRoute: PlansIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

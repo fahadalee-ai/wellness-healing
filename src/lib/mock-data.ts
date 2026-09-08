@@ -1,515 +1,505 @@
-export type Role = "rbt" | "bcba" | "field_staff" | "admin";
+import { PHOTOS } from "./images";
+
+export const BUSINESS = {
+  name: "Wellness & Healing SF",
+  shortName: "W&H SF",
+  address: "1807 2nd Street, Ste 71",
+  phone: "(505) 670-7419",
+  phoneHref: "tel:+15056707419",
+} as const;
+
+export const COACH = {
+  name: "Jackie",
+  fullName: "Jackie",
+  title: "Wellness Coach",
+  photo: PHOTOS.jackie,
+  bio: "Trauma-informed coach supporting survivors and film professionals through seasons of change — with patience, privacy, and practical care.",
+  credentials: "Certified Wellness Coach · Trauma-Informed Practitioner",
+  stats: [
+    { value: "12+", label: "Years of Practice" },
+    { value: "20K+", label: "Sessions" },
+    { value: "98%", label: "Client Satisfaction" },
+  ],
+} as const;
+
+export type ServiceId = "one-on-one" | "small-group" | "large-group";
+
+export type SessionStatus = "upcoming" | "past" | "cancelled";
+
+export type BillingCycle = "monthly" | "quarterly";
 
 export type User = {
   id: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   phone: string;
   password: string;
-  role: Role;
-  bacbNumber?: string;
+  avatar?: string;
+  intakeComplete: boolean;
+  intake?: IntakeAnswers;
+  prefs: NotificationPrefs;
 };
 
-export type Supervisor = {
+export type IntakeAnswers = {
+  reason?: string;
+  background?: string;
+  support: string[];
+  referral?: string;
+};
+
+export type NotificationPrefs = {
+  sessionReminders: boolean;
+  bookingUpdates: boolean;
+  messages: boolean;
+  resources: boolean;
+};
+
+export type CoachingSession = {
   id: string;
-  name: string;
-  credential: string;
-  initials: string;
+  serviceId: ServiceId;
+  focus?: string;
+  coachName: string;
+  date: string;
+  time: string;
+  durationMin: number;
+  status: SessionStatus;
+  notes?: string;
+  firstSession?: boolean;
+  zoomUrl: string;
+  price: number;
+  coveredByPlan?: boolean;
+  review?: { rating: number; text?: string };
 };
 
-export type FieldworkEntry = {
+export type Subscription = {
+  planId: string;
+  planName: string;
+  price: number;
+  cycle: BillingCycle;
+  sessionsIncluded: number;
+  sessionsUsed: number;
+  renewalDate: string;
+  status: "active" | "paused" | "cancelled";
+};
+
+export type PaymentMethod = {
+  id: string;
+  brand: string;
+  last4: string;
+  expiry: string;
+};
+
+export type Invoice = {
   id: string;
   date: string;
-  activityType: string;
-  client: string;
-  startTime: string;
-  endTime: string;
-  hours: number;
-  notes: string;
-  status: "pending" | "approved";
+  amount: number;
+  label: string;
 };
 
-export type SupervisionSession = {
+export type ChatMessage = {
   id: string;
-  date: string;
+  from: "me" | "jackie";
+  text: string;
+  at: string;
+};
+
+export type BookingDraft = {
+  serviceId?: ServiceId;
+  focus?: string;
+  date?: string;
   time?: string;
-  startTime?: string;
-  endTime?: string;
-  durationHours: number;
-  sessionType: string;
-  notes: string;
-  topics?: string;
-  supervisorId: string;
-  status: "scheduled" | "requested" | "pending" | "approved";
-};
-
-export type ComplianceItem = {
-  id: string;
-  name: string;
-  status: "current" | "due_soon" | "missing" | "expired";
-  detail: string;
-  expiresAt?: string;
-  documentId?: string;
-  remind: boolean;
-  category: string;
-};
-
-export type AppDocument = {
-  id: string;
-  name: string;
-  uploadedAt: string;
-  status: "approved" | "pending" | "missing" | "expiring" | "rejected";
-  category: string;
-  expiresAt?: string;
-  previewUrl?: string;
-};
-
-export type FormTemplate = {
-  id: string;
-  name: string;
-  description: string;
-  fields: { id: string; label: string; type: "text" | "textarea" | "date" | "select"; options?: string[] }[];
-};
-
-export type FormRecord = {
-  id: string;
-  templateId: string;
-  name: string;
-  description: string;
-  status: "todo" | "pending" | "approved" | "rejected";
-  submittedAt?: string;
-  values: Record<string, string>;
-  signature?: string;
-  signedName?: string;
+  durationMin?: number;
+  notes?: string;
+  firstSession?: boolean;
+  promo?: string;
+  rescheduleId?: string;
 };
 
 export type AppNotification = {
   id: string;
-  type: "warning" | "info" | "error";
+  title: string;
   text: string;
   time: string;
   read: boolean;
   href: string;
 };
 
-export type ActivityItem = {
-  id: string;
-  text: string;
-  time: string;
-  tone: "blue" | "orange";
-};
+export const SERVICES: {
+  id: ServiceId;
+  title: string;
+  blurb: string;
+  price: number;
+  durationMin: number;
+}[] = [
+  {
+    id: "one-on-one",
+    title: "Private 1-on-1 Coaching",
+    blurb: "Focused, individual sessions tailored to your journey",
+    price: 175,
+    durationMin: 50,
+  },
+  {
+    id: "small-group",
+    title: "Small Group Coaching",
+    blurb: "A shared space with a handful of people walking a similar path",
+    price: 65,
+    durationMin: 75,
+  },
+  {
+    id: "large-group",
+    title: "Large Group Sessions",
+    blurb: "Guided gatherings for connection, practice, and perspective",
+    price: 35,
+    durationMin: 60,
+  },
+];
 
-export const FIELDWORK_REQUIRED = 80;
-export const SUPERVISION_REQUIRED = 10;
+export const FOCUS_OPTIONS = [
+  {
+    id: "trauma",
+    title: "Trauma-Informed Coaching",
+    blurb: "Gentle, paced support for healing and nervous-system safety.",
+  },
+  {
+    id: "career",
+    title: "Career Transition Coaching",
+    blurb: "For producers, directors, and actors navigating high-pressure change.",
+  },
+  {
+    id: "wellness",
+    title: "General Wellness Coaching",
+    blurb: "Clarity, habits, and steadiness for everyday life.",
+  },
+] as const;
 
-export const ACTIVITY_TYPES = [
-  "Direct client session",
-  "Group supervision prep",
-  "Program review",
-  "Independent fieldwork",
+export const PLANS = [
+  {
+    id: "foundation",
+    name: "Foundation",
+    sessionsPerMonth: 2,
+    monthlyPrice: 180,
+    quarterlyPrice: 486,
+    features: [
+      "2 private sessions each month",
+      "Zoom sessions with Jackie",
+      "Session notes & follow-up",
+      "Cancel or change anytime",
+    ],
+  },
+  {
+    id: "growth",
+    name: "Growth",
+    sessionsPerMonth: 4,
+    monthlyPrice: 320,
+    quarterlyPrice: 864,
+    popular: true,
+    features: [
+      "4 private sessions each month",
+      "Priority scheduling",
+      "Zoom sessions with Jackie",
+      "Session notes & follow-up",
+      "Cancel or change anytime",
+    ],
+  },
+  {
+    id: "transformation",
+    name: "Transformation",
+    sessionsPerMonth: 4,
+    monthlyPrice: 420,
+    quarterlyPrice: 1134,
+    features: [
+      "4 private sessions each month",
+      "Priority scheduling",
+      "Group session access",
+      "Messaging support with Jackie",
+      "Cancel or change anytime",
+    ],
+  },
+] as const;
+
+export const ONBOARDING = [
+  {
+    heading: "A Path Toward Healing, Clarity & Transformation",
+    subtext: "Compassionate, one-on-one wellness coaching — wherever you are.",
+    image: PHOTOS.sunroom,
+    alt: "Soft-lit sunroom with plants by a window",
+  },
+  {
+    heading: "Support Built for Where You Are Now",
+    subtext: "Private sessions for trauma survivors and industry professionals navigating real change.",
+    image: PHOTOS.windowPortrait,
+    alt: "Person seated quietly by a window",
+  },
+  {
+    heading: "Ready to Take the Next Step?",
+    subtext: "Book your first session in minutes — all sessions held securely over Zoom.",
+    image: PHOTOS.duskLandscape,
+    alt: "Warm dusk landscape with mountains and clouds",
+  },
+] as const;
+
+export const INTAKE_REASONS = [
+  "Personal/Trauma Healing",
+  "Career & Industry Pressure",
+  "Both",
+  "Just Exploring",
+] as const;
+
+export const INTAKE_BACKGROUNDS = [
+  "Film/Entertainment Industry",
+  "Other Professional",
+  "Prefer not to say",
+] as const;
+
+export const INTAKE_SUPPORT = [
+  "Private 1-on-1 Coaching",
+  "Small Group Coaching",
+  "Large Group Sessions",
+  "Not Sure Yet",
+] as const;
+
+export const INTAKE_REFERRALS = [
+  "Friend or colleague",
+  "Film industry referral",
+  "Instagram / Social",
+  "Google search",
+  "Podcast or article",
   "Other",
 ] as const;
 
-export const SESSION_TYPES = ["Individual", "Group", "Observation"] as const;
-
-export const DOCUMENT_CATEGORIES = [
-  { id: "cpr", label: "CPR certification" },
-  { id: "rbt", label: "BACB RBT certification" },
-  { id: "background", label: "Background check" },
-  { id: "supervision-contract", label: "Supervision contract" },
-  { id: "hipaa", label: "HIPAA training" },
-  { id: "other", label: "Other" },
+export const TESTIMONIALS = [
+  {
+    name: "Mira S.",
+    quote: "Jackie held space for me without rushing. I left each session clearer than I arrived.",
+    rating: 5,
+    photo: PHOTOS.testimonial1,
+  },
+  {
+    name: "Daniel R.",
+    quote: "As a producer between projects, this was the first place that understood both the grief and the ambition.",
+    rating: 5,
+    photo: PHOTOS.testimonial2,
+  },
+  {
+    name: "Asha K.",
+    quote: "Private, grounded, and never salesy. I finally felt safe enough to begin.",
+    rating: 5,
+    photo: PHOTOS.testimonial3,
+  },
 ] as const;
+
+export const PILLARS = [
+  { title: "For Trauma Survivors", blurb: "Paced, consent-led support.", image: PHOTOS.pillarTrauma },
+  { title: "Mindful by Design", blurb: "No urgency. No pressure.", image: PHOTOS.pillarMindful },
+  { title: "Industry Professionals", blurb: "For life between projects.", image: PHOTOS.pillarIndustry },
+  { title: "Thoughtfully Curated", blurb: "Small, intentional offerings.", image: PHOTOS.pillarCurated },
+] as const;
+
+export const RESOURCES = [
+  {
+    title: "A quieter morning",
+    body: "A five-minute journaling prompt for days that feel too full.",
+    image: PHOTOS.teaJournal,
+  },
+  {
+    title: "Coming back to the body",
+    body: "A short grounding practice you can do before a Zoom session.",
+    image: PHOTOS.plants,
+  },
+  {
+    title: "Between projects",
+    body: "Notes on identity, rest, and career transitions in film.",
+    image: PHOTOS.duskLandscape,
+  },
+] as const;
+
+export const DEFAULT_PREFS: NotificationPrefs = {
+  sessionReminders: true,
+  bookingUpdates: true,
+  messages: true,
+  resources: false,
+};
 
 export const seedUsers: User[] = [
   {
     id: "u1",
-    firstName: "Maya",
-    lastName: "Chen",
-    email: "maya@ontopaba.com",
-    phone: "(303) 555-0142",
-    password: "Training1",
-    role: "rbt",
-    bacbNumber: "RBT-482913",
-  },
-  {
-    id: "u2",
-    firstName: "Rafael",
-    lastName: "Alvarez",
-    email: "rafael@ontopaba.com",
-    phone: "(303) 555-0198",
-    password: "Training1",
-    role: "bcba",
-    bacbNumber: "1-14-16220",
-  },
-  {
-    id: "u3",
-    firstName: "Jordan",
-    lastName: "Lee",
-    email: "jordan@ontopaba.com",
-    phone: "(303) 555-0166",
-    password: "Training1",
-    role: "field_staff",
-  },
-  {
-    id: "u-admin",
-    firstName: "Avery",
-    lastName: "Admin",
-    email: "admin@ontopaba.com",
-    phone: "(303) 555-0100",
-    password: "Training1",
-    role: "admin",
+    fullName: "Elena Vargas",
+    email: "elena@wellnesshealingsf.com",
+    phone: "(310) 555-0188",
+    password: "Healing1",
+    avatar: PHOTOS.testimonial1,
+    intakeComplete: true,
+    intake: {
+      reason: "Both",
+      background: "Film/Entertainment Industry",
+      support: ["Private 1-on-1 Coaching"],
+      referral: "Friend or colleague",
+    },
+    prefs: DEFAULT_PREFS,
   },
 ];
 
-export const seedSupervisor: Supervisor = {
-  id: "sup1",
-  name: "Dr. R. Alvarez",
-  credential: "BCBA",
-  initials: "RA",
+export const seedSessions: CoachingSession[] = [
+  {
+    id: "s1",
+    serviceId: "one-on-one",
+    focus: "Career Transition Coaching",
+    coachName: COACH.name,
+    date: "2026-09-12",
+    time: "10:00",
+    durationMin: 50,
+    status: "upcoming",
+    notes: "Between projects — want to talk through next steps without the noise.",
+    zoomUrl: "https://zoom.us/j/wellness-healing-sf",
+    price: 0,
+    coveredByPlan: true,
+  },
+  {
+    id: "s2",
+    serviceId: "one-on-one",
+    focus: "Trauma-Informed Coaching",
+    coachName: COACH.name,
+    date: "2026-08-22",
+    time: "09:00",
+    durationMin: 65,
+    status: "past",
+    firstSession: true,
+    zoomUrl: "https://zoom.us/j/wellness-healing-sf",
+    price: 0,
+    coveredByPlan: true,
+  },
+  {
+    id: "s3",
+    serviceId: "small-group",
+    coachName: COACH.name,
+    date: "2026-07-30",
+    time: "18:00",
+    durationMin: 75,
+    status: "cancelled",
+    zoomUrl: "https://zoom.us/j/wellness-healing-sf",
+    price: 65,
+  },
+];
+
+export const seedSubscription: Subscription = {
+  planId: "growth",
+  planName: "Growth",
+  price: 320,
+  cycle: "monthly",
+  sessionsIncluded: 4,
+  sessionsUsed: 2,
+  renewalDate: "2026-10-01",
+  status: "active",
 };
 
-export const seedFieldwork: FieldworkEntry[] = [
-  {
-    id: "fw1",
-    date: "2026-08-24",
-    activityType: "Direct client session",
-    client: "Client J.M.",
-    startTime: "09:00",
-    endTime: "12:00",
-    hours: 3,
-    notes: "Manding and intraverbal targets. Two new mands independently.",
-    status: "approved",
-  },
-  {
-    id: "fw2",
-    date: "2026-08-22",
-    activityType: "Program review",
-    client: "Client A.R.",
-    startTime: "13:00",
-    endTime: "15:00",
-    hours: 2,
-    notes: "Updated probe data and revised prompt fading steps.",
-    status: "approved",
-  },
-  {
-    id: "fw3",
-    date: "2026-08-20",
-    activityType: "Independent fieldwork",
-    client: "Module 4",
-    startTime: "18:00",
-    endTime: "19:30",
-    hours: 1.5,
-    notes: "Reviewed measurement and graphing modules.",
-    status: "pending",
-  },
-  {
-    id: "fw4",
-    date: "2026-08-18",
-    activityType: "Direct client session",
-    client: "Client J.M.",
-    startTime: "09:30",
-    endTime: "12:30",
-    hours: 3,
-    notes: "NET in playroom; high rates of independent requests.",
-    status: "approved",
-  },
+export const seedPaymentMethods: PaymentMethod[] = [
+  { id: "pm1", brand: "Visa", last4: "4242", expiry: "09/28" },
 ];
 
-export const seedSupervision: SupervisionSession[] = [
-  {
-    id: "sv-next",
-    date: "2026-08-29",
-    time: "14:00",
-    durationHours: 1,
-    sessionType: "Individual",
-    notes: "Monthly restricted-hours review",
-    supervisorId: "sup1",
-    status: "scheduled",
-  },
-  {
-    id: "sv1",
-    date: "2026-08-15",
-    startTime: "14:00",
-    endTime: "15:30",
-    durationHours: 1.5,
-    sessionType: "Individual",
-    topics: "Graphing, feedback on session notes",
-    notes: "",
-    supervisorId: "sup1",
-    status: "approved",
-  },
-  {
-    id: "sv2",
-    date: "2026-08-08",
-    startTime: "10:00",
-    endTime: "11:30",
-    durationHours: 1.5,
-    sessionType: "Observation",
-    topics: "Live observation of Client J.M.",
-    notes: "",
-    supervisorId: "sup1",
-    status: "approved",
-  },
-  {
-    id: "sv3",
-    date: "2026-08-01",
-    startTime: "13:00",
-    endTime: "15:00",
-    durationHours: 2,
-    sessionType: "Individual",
-    topics: "Ethics and documentation",
-    notes: "",
-    supervisorId: "sup1",
-    status: "approved",
-  },
-  {
-    id: "sv4",
-    date: "2026-07-25",
-    startTime: "14:00",
-    endTime: "16:00",
-    durationHours: 2,
-    sessionType: "Group",
-    topics: "Group case review",
-    notes: "",
-    supervisorId: "sup1",
-    status: "approved",
-  },
+export const seedInvoices: Invoice[] = [
+  { id: "inv1", date: "2026-09-01", amount: 320, label: "Growth — monthly" },
+  { id: "inv2", date: "2026-08-01", amount: 320, label: "Growth — monthly" },
+  { id: "inv3", date: "2026-07-01", amount: 320, label: "Growth — monthly" },
 ];
 
-export const seedDocuments: AppDocument[] = [
+export const seedMessages: ChatMessage[] = [
   {
-    id: "doc1",
-    name: "CPR_card_2025.pdf",
-    uploadedAt: "2026-03-12",
-    status: "expiring",
-    category: "cpr",
-    expiresAt: "2026-09-07",
+    id: "m1",
+    from: "jackie",
+    text: "Welcome, Elena. I’m glad you’re here. Whenever you’re ready, we can begin.",
+    at: "2026-09-02T15:12:00",
   },
   {
-    id: "doc2",
-    name: "RBT_certificate.pdf",
-    uploadedAt: "2026-01-08",
-    status: "approved",
-    category: "rbt",
-    expiresAt: "2027-01-08",
+    id: "m2",
+    from: "me",
+    text: "Thank you. I’m looking forward to Friday.",
+    at: "2026-09-02T16:40:00",
   },
   {
-    id: "doc3",
-    name: "Background_check.pdf",
-    uploadedAt: "2026-08-20",
-    status: "pending",
-    category: "background",
-  },
-];
-
-export const seedCompliance: ComplianceItem[] = [
-  {
-    id: "c1",
-    name: "CPR certification",
-    status: "due_soon",
-    detail: "Expires in 12 days",
-    expiresAt: "2026-09-07",
-    documentId: "doc1",
-    remind: true,
-    category: "cpr",
-  },
-  {
-    id: "c2",
-    name: "BACB RBT certification",
-    status: "current",
-    detail: "Active",
-    expiresAt: "2027-01-08",
-    documentId: "doc2",
-    remind: true,
-    category: "rbt",
-  },
-  {
-    id: "c3",
-    name: "Background check",
-    status: "current",
-    detail: "Active — pending latest upload",
-    documentId: "doc3",
-    remind: true,
-    category: "background",
-  },
-  {
-    id: "c4",
-    name: "Supervision contract",
-    status: "missing",
-    detail: "Missing document",
-    remind: true,
-    category: "supervision-contract",
-  },
-  {
-    id: "c5",
-    name: "HIPAA training",
-    status: "current",
-    detail: "Active",
-    expiresAt: "2027-02-01",
-    remind: false,
-    category: "hipaa",
-  },
-];
-
-export const seedTemplates: FormTemplate[] = [
-  {
-    id: "ft1",
-    name: "Monthly fieldwork attestation",
-    description: "Confirm restricted and unrestricted hours for the month.",
-    fields: [
-      { id: "month", label: "Month", type: "text" },
-      { id: "restricted", label: "Restricted hours", type: "text" },
-      { id: "unrestricted", label: "Unrestricted hours", type: "text" },
-      { id: "notes", label: "Notes", type: "textarea" },
-    ],
-  },
-  {
-    id: "ft2",
-    name: "Incident report",
-    description: "Document a session incident for supervisor review.",
-    fields: [
-      { id: "date", label: "Date", type: "date" },
-      { id: "client", label: "Client / context", type: "text" },
-      {
-        id: "severity",
-        label: "Severity",
-        type: "select",
-        options: ["Low", "Moderate", "High"],
-      },
-      { id: "summary", label: "What happened", type: "textarea" },
-    ],
-  },
-  {
-    id: "ft3",
-    name: "Supervision agreement",
-    description: "Acknowledge your supervision contract terms.",
-    fields: [
-      { id: "supervisor", label: "Supervisor name", type: "text" },
-      { id: "start", label: "Start date", type: "date" },
-    ],
-  },
-];
-
-export const seedForms: FormRecord[] = [
-  {
-    id: "f-todo",
-    templateId: "ft1",
-    name: "Monthly fieldwork attestation",
-    description: "Confirm restricted and unrestricted hours for the month.",
-    status: "todo",
-    values: {},
-  },
-  {
-    id: "f1",
-    templateId: "ft3",
-    name: "Supervision agreement",
-    description: "Acknowledge your supervision contract terms.",
-    status: "approved",
-    submittedAt: "2026-07-02",
-    values: { supervisor: "Dr. R. Alvarez", start: "2026-07-01" },
-    signedName: "Maya Chen",
-  },
-  {
-    id: "f2",
-    templateId: "ft2",
-    name: "Incident report",
-    description: "Document a session incident for supervisor review.",
-    status: "pending",
-    submittedAt: "2026-08-19",
-    values: {
-      date: "2026-08-18",
-      client: "Client J.M.",
-      severity: "Low",
-      summary: "Client dropped materials; redirected successfully.",
-    },
-    signedName: "Maya Chen",
+    id: "m3",
+    from: "jackie",
+    text: "I’ll send the Zoom link the day before. Rest well until then.",
+    at: "2026-09-02T16:48:00",
   },
 ];
 
 export const seedNotifications: AppNotification[] = [
   {
     id: "n1",
-    type: "warning",
-    text: "CPR certification expires in 12 days",
-    time: "2 hours ago",
+    title: "Session reminder",
+    text: "Your session with Jackie is Friday at 10:00 AM.",
+    time: "Yesterday",
     read: false,
-    href: "/compliance/c1",
+    href: "/sessions",
   },
   {
     id: "n2",
-    type: "info",
-    text: "Supervision session Friday at 2:00 PM",
-    time: "Yesterday",
+    title: "Zoom link",
+    text: "Your Zoom link will arrive 24 hours before your session.",
+    time: "2 days ago",
     read: false,
-    href: "/supervision",
+    href: "/sessions",
   },
   {
     id: "n3",
-    type: "info",
-    text: "Session note approved",
-    time: "2 hours ago",
+    title: "Welcome",
+    text: "Your Growth plan is active. Two sessions remain this cycle.",
+    time: "Sep 1",
     read: true,
-    href: "/fieldwork/fw1",
-  },
-  {
-    id: "n4",
-    type: "error",
-    text: "Supervision contract is missing",
-    time: "3 days ago",
-    read: false,
-    href: "/compliance/c4",
+    href: "/subscription",
   },
 ];
 
-export const seedActivity: ActivityItem[] = [
-  { id: "a1", text: "Session note approved", time: "2 hours ago", tone: "blue" },
-  { id: "a2", text: "Fieldwork logged — 3.0 hrs", time: "Yesterday", tone: "orange" },
-  { id: "a3", text: "Supervision signed off", time: "3 days ago", tone: "blue" },
+export const UNAVAILABLE_DATES = new Set(["2026-09-10", "2026-09-14", "2026-09-20", "2026-09-27"]);
+
+export const BOOKED_SLOTS: Record<string, string[]> = {
+  "2026-09-09": ["10:00", "15:00"],
+  "2026-09-11": ["09:00", "13:00"],
+  "2026-09-12": ["10:00"],
+  "2026-09-16": ["11:00", "18:00"],
+};
+
+export const TIME_SLOTS = [
+  { time: "08:00", period: "Morning" as const },
+  { time: "09:00", period: "Morning" as const },
+  { time: "10:00", period: "Morning" as const },
+  { time: "11:00", period: "Morning" as const },
+  { time: "13:00", period: "Afternoon" as const },
+  { time: "14:00", period: "Afternoon" as const },
+  { time: "15:00", period: "Afternoon" as const },
+  { time: "16:00", period: "Afternoon" as const },
+  { time: "17:00", period: "Evening" as const },
+  { time: "18:00", period: "Evening" as const },
 ];
 
-export const ONBOARDING = [
-  {
-    title: "Log fieldwork in seconds",
-    body: "Track session hours, activity details, and your progress toward BACB certification requirements — all from your phone.",
-    image:
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1600&q=80",
-    alt: "Clinician working with a child during a session",
-  },
-  {
-    title: "Never miss a supervision session",
-    body: "See your assigned supervisor, schedule sessions, and track supervision hours with built-in sign-off approval.",
-    image:
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1600&q=80",
-    alt: "Supervisor reviewing notes with a colleague",
-  },
-  {
-    title: "Compliance made simple",
-    body: "Get reminders before certifications expire and know exactly what's missing — no more last-minute scrambling.",
-    image:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80",
-    alt: "Organized certification documents on a desk",
-  },
-  {
-    title: "Your entire ABA career, organized",
-    body: "Documents, forms, e-signatures, and reports — everything BACB certification requires, always within reach.",
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80",
-    alt: "Professional using a phone to stay organized",
-  },
-] as const;
+export function serviceById(id: ServiceId) {
+  return SERVICES.find((s) => s.id === id) ?? SERVICES[0];
+}
 
-export function roleLabel(role: Role) {
-  if (role === "rbt") return "RBT";
-  if (role === "bcba") return "BCBA / Supervisor";
-  if (role === "field_staff") return "Field staff";
-  return "Admin";
+export function planById(id: string) {
+  return PLANS.find((p) => p.id === id);
+}
+
+export function firstName(fullName: string) {
+  return fullName.trim().split(/\s+/)[0] || fullName;
+}
+
+export function initials(fullName: string) {
+  const parts = fullName.trim().split(/\s+/);
+  return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase();
+}
+
+export function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
 }
 
 export function formatDate(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString("en-US", {
+    weekday: "short",
     month: "short",
     day: "numeric",
   });
@@ -518,8 +508,8 @@ export function formatDate(iso: string) {
 export function formatDateLong(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
+    weekday: "long",
+    month: "long",
     day: "numeric",
   });
 }
@@ -533,22 +523,62 @@ export function formatTime(hhmm: string) {
 
 export function todayIso() {
   const d = new Date();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${m}-${day}`;
+  return `${d.getFullYear()}-${month}-${day}`;
 }
 
-export function greeting() {
-  const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
+export function addDaysIso(iso: string, days: number) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const date = new Date(y, m - 1, d + days);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
 }
 
-export function initials(first: string, last: string) {
-  return `${first[0] ?? ""}${last[0] ?? ""}`.toUpperCase();
+export function localTimezoneLabel() {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", { timeZoneName: "short" }).formatToParts(new Date());
+    return parts.find((p) => p.type === "timeZoneName")?.value ?? "local time";
+  } catch {
+    return "local time";
+  }
 }
 
-export function categoryLabel(id: string) {
-  return DOCUMENT_CATEGORIES.find((c) => c.id === id)?.label ?? id;
+export function canJoinZoom(date: string, time: string, durationMin = 50) {
+  const start = new Date(`${date}T${time}:00`);
+  if (Number.isNaN(start.getTime())) return false;
+  const now = Date.now();
+  const diffMin = (start.getTime() - now) / 60000;
+  return diffMin <= 15 && diffMin > -durationMin;
+}
+
+export function money(amount: number) {
+  return amount.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+}
+
+export function moneyExact(amount: number) {
+  return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
+
+export function daysInMonth(year: number, monthIndex: number) {
+  return new Date(year, monthIndex + 1, 0).getDate();
+}
+
+export function isDateUnavailable(iso: string) {
+  if (iso < todayIso()) return true;
+  return UNAVAILABLE_DATES.has(iso);
+}
+
+export function slotsForDate(iso: string) {
+  const booked = new Set(BOOKED_SLOTS[iso] ?? []);
+  return TIME_SLOTS.map((slot) => ({
+    ...slot,
+    available: !booked.has(slot.time) && !(iso === todayIso() && slot.time <= currentHm()),
+  }));
+}
+
+function currentHm() {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }

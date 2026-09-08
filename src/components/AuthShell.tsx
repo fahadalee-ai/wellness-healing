@@ -1,8 +1,10 @@
 import { useCanGoBack, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, Eye, EyeOff, Lock } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Field, inputClass } from "@/components/kit";
+import { Logo, Wordmark } from "@/components/Logo";
+import { PHOTOS } from "@/lib/images";
 
 export function AuthShell({
   title,
@@ -10,33 +12,52 @@ export function AuthShell({
   children,
   footer,
   showBack = true,
+  showLogo = true,
+  background = PHOTOS.windowPortrait,
 }: {
   title: string;
   subtitle?: string;
   children: ReactNode;
   footer?: ReactNode;
   showBack?: boolean;
+  showLogo?: boolean;
+  background?: string;
 }) {
   const router = useRouter();
   const canGoBack = useCanGoBack();
 
   return (
-    <div className="relative min-h-dvh bg-background px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
-      {showBack && (
-        <button
-          type="button"
-          aria-label="Go back"
-          onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: "/" }))}
-          className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-card text-foreground"
-        >
-          <ArrowLeft size={18} strokeWidth={2} />
-        </button>
-      )}
+    <div className="relative min-h-dvh overflow-hidden bg-background">
+      <img src={background} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-[#2D2B29]/78" />
+      <div className="relative z-10 min-h-dvh overflow-y-auto no-scrollbar px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
+        {showBack ? (
+          <button
+            type="button"
+            aria-label="Go back"
+            onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: "/onboarding" }))}
+            className="mb-4 flex h-12 w-12 items-center justify-center border border-cream/25 bg-[#2D2B29]/40 text-foreground"
+          >
+            <ArrowLeft size={18} strokeWidth={1.75} />
+          </button>
+        ) : (
+          <div className="h-2" />
+        )}
 
-      <h1 className="text-3xl font-semibold tracking-tight text-foreground">{title}</h1>
-      {subtitle && <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{subtitle}</p>}
-      <div className="mt-6">{children}</div>
-      {footer}
+        {showLogo && (
+          <div className="mb-6 flex flex-col items-center">
+            <Logo className="h-20 w-20" />
+            <Wordmark className="mt-1" />
+          </div>
+        )}
+
+        <h1 className="text-center font-display text-3xl font-medium tracking-tight text-foreground">{title}</h1>
+        {subtitle && (
+          <p className="mx-auto mt-2 max-w-xs text-center text-sm leading-relaxed text-cream/75">{subtitle}</p>
+        )}
+        <div className="mt-8">{children}</div>
+        {footer}
+      </div>
     </div>
   );
 }
@@ -51,7 +72,7 @@ export function AuthInput({
       {icon && (
         <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">{icon}</span>
       )}
-      <input {...props} className={cn(inputClass, icon && "pl-10", className)} />
+      <input {...props} className={cn(inputClass, "bg-[#2D2B29]/70", icon && "pl-10", className)} />
     </div>
   );
 }
@@ -65,19 +86,14 @@ export function PasswordField({
   return (
     <Field label={label} error={error}>
       <div className="relative">
-        <AuthInput
-          {...props}
-          type={show ? "text" : "password"}
-          icon={<Lock size={16} strokeWidth={2} />}
-          className="pr-11"
-        />
+        <AuthInput {...props} type={show ? "text" : "password"} className="pr-12" />
         <button
           type="button"
           aria-label={show ? "Hide password" : "Show password"}
           onClick={() => setShow((s) => !s)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground"
+          className="absolute right-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center text-muted-foreground"
         >
-          {show ? <EyeOff size={16} strokeWidth={2} /> : <Eye size={16} strokeWidth={2} />}
+          {show ? <EyeOff size={16} strokeWidth={1.75} /> : <Eye size={16} strokeWidth={1.75} />}
         </button>
       </div>
     </Field>
@@ -87,16 +103,16 @@ export function PasswordField({
 export function SocialAuth({ onContinue }: { onContinue: () => void }) {
   return (
     <>
-      <div className="my-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-        <span className="h-px flex-1 bg-border" />
+      <div className="my-6 flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-cream/70">
+        <span className="h-px flex-1 bg-cream/20" />
         or continue with
-        <span className="h-px flex-1 bg-border" />
+        <span className="h-px flex-1 bg-cream/20" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
           onClick={onContinue}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-3 text-sm font-semibold text-foreground hover:bg-muted"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-cream/25 bg-[#2D2B29]/50 px-3 text-sm text-foreground hover:bg-[#2D2B29]/70"
         >
           <GoogleMark />
           Google
@@ -104,7 +120,7 @@ export function SocialAuth({ onContinue }: { onContinue: () => void }) {
         <button
           type="button"
           onClick={onContinue}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-3 text-sm font-semibold text-foreground hover:bg-muted"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-cream/25 bg-[#2D2B29]/50 px-3 text-sm text-foreground hover:bg-[#2D2B29]/70"
         >
           <AppleMark />
           Apple

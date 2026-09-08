@@ -39,57 +39,61 @@
   --color-border-dark: var(--border-dark);
   --color-input: var(--border-light);
   --color-ring: var(--primary);
+  --color-cream: var(--cream);
+  --color-stone: var(--stone);
 
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "Manrope", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   --radius: 4px;
-  --brand-blue: #1b75ba;
-  --brand-orange: #f05a2a;
-  --status-success: #3b9e63;
-  --status-warning: #f05a2a;
-  --status-error: #e24b4a;
-
-  --primary: #1b75ba;
-  --primary-foreground: #f5f5f5;
-  --primary-dark: #155d94;
-  --accent: #f05a2a;
-  --accent-foreground: #f5f5f5;
-  --ink: #0f1115;
-  --surface: #1a1d23;
-  --background: #0f1115;
-  --foreground: #f5f5f5;
-  --card: #1a1d23;
-  --card-foreground: #f5f5f5;
-  --popover: #1a1d23;
-  --popover-foreground: #f5f5f5;
-  --secondary: #1a1d23;
-  --secondary-foreground: #f5f5f5;
-  --muted: #23262e;
-  --muted-foreground: #9ca3af;
-  --dim: #6b7280;
-  --destructive: #e24b4a;
-  --destructive-foreground: #f5f5f5;
-  --success: #3b9e63;
-  --warning: #f05a2a;
-  --danger: #e24b4a;
-  --border-light: rgba(255, 255, 255, 0.08);
-  --border-dark: rgba(255, 255, 255, 0.08);
-  --sidebar: #1a1d23;
-  --sidebar-foreground: #f5f5f5;
-  --sidebar-primary: #1b75ba;
-  --sidebar-primary-foreground: #f5f5f5;
-  --sidebar-accent: #23262e;
-  --sidebar-accent-foreground: #f5f5f5;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #1b75ba;
+  --cream: #f5f3ef;
+  --stone: #a8a29a;
+  --primary: #738f60;
+  --primary-foreground: #f5f3ef;
+  --primary-dark: #5f784e;
+  --accent: #738f60;
+  --accent-foreground: #f5f3ef;
+  --ink: #2d2b29;
+  --surface: #38352f;
+  --background: #2d2b29;
+  --foreground: #f5f3ef;
+  --card: #38352f;
+  --card-foreground: #f5f3ef;
+  --popover: #38352f;
+  --popover-foreground: #f5f3ef;
+  --secondary: #38352f;
+  --secondary-foreground: #f5f3ef;
+  --muted: #3f3c36;
+  --muted-foreground: #a8a29a;
+  --dim: #8a847c;
+  --destructive: #c4786a;
+  --destructive-foreground: #f5f3ef;
+  --success: #738f60;
+  --warning: #c4a484;
+  --danger: #c4786a;
+  --border-light: #4a4741;
+  --border-dark: #4a4741;
+  --sidebar: #2d2b29;
+  --sidebar-foreground: #f5f3ef;
+  --sidebar-primary: #738f60;
+  --sidebar-primary-foreground: #f5f3ef;
+  --sidebar-accent: #38352f;
+  --sidebar-accent-foreground: #f5f3ef;
+  --sidebar-border: #4a4741;
+  --sidebar-ring: #738f60;
 }
 
 @layer base {
   * {
     border-color: var(--border-light);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
   }
 
   html,
@@ -98,6 +102,16 @@
     color: var(--foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
   }
 
   h1,
@@ -106,8 +120,8 @@
   h4,
   .font-display {
     font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    letter-spacing: -0.02em;
     line-height: 1.2;
   }
 
@@ -115,6 +129,11 @@
   textarea,
   select {
     color-scheme: dark;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -125,11 +144,43 @@
   }
 }
 
-@keyframes splash-bar {
-  0% {
-    transform: translateX(-100%);
+@keyframes splash-fade {
+  from {
+    opacity: 0;
   }
-  100% {
-    transform: translateX(280%);
+  to {
+    opacity: 1;
   }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-splash {
+  animation: splash-fade 800ms ease-out both;
+}
+
+.animate-fade-up {
+  animation: fade-up 280ms ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in 280ms ease-out both;
 }

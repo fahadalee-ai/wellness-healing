@@ -1,77 +1,65 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import { clearStorage, readStorage, writeStorage } from "./storage";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { clearStorage, readJson, readStorage, writeJson, writeStorage } from "./storage";
 import {
-  seedActivity,
-  seedCompliance,
-  seedDocuments,
-  seedFieldwork,
-  seedForms,
+  DEFAULT_PREFS,
+  PLANS,
+  seedInvoices,
+  seedMessages,
   seedNotifications,
-  seedSupervisor,
-  seedTemplates,
+  seedPaymentMethods,
+  seedSessions,
+  seedSubscription,
   seedUsers,
-  type ActivityItem,
-  type AppDocument,
   type AppNotification,
-  type ComplianceItem,
-  type FieldworkEntry,
-  type FormRecord,
-  type FormTemplate,
-  type Role,
-  type SupervisionSession,
-  type Supervisor,
+  type BookingDraft,
+  type ChatMessage,
+  type CoachingSession,
+  type IntakeAnswers,
+  type Invoice,
+  type NotificationPrefs,
+  type PaymentMethod,
+  type SessionStatus,
+  type Subscription,
   type User,
-  seedSupervision,
 } from "./mock-data";
 
 export type Toast = { id: number; title: string; body?: string };
 
-type Prefs = {
-  "Supervision reminders": boolean;
-  "Compliance deadlines": boolean;
-  "Document expirations": boolean;
-  "Pending approvals": boolean;
-};
-
 type Store = {
+  hydrated: boolean;
   users: User[];
   user: User | null;
   onboarded: boolean;
   markOnboarded: () => void;
-  login: (email: string, password: string) => { ok: true } | { ok: false; reason: "invalid" | "admin" };
-  register: (input: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    bacbNumber?: string;
-    password: string;
-    role: Role;
-  }) => { ok: true; email: string } | { ok: false; reason: "exists" };
+  login: (email: string, password: string) => { ok: true; intakeComplete: boolean };
+  register: (input: { fullName: string; email: string; phone: string; password: string }) => { ok: true };
   logout: () => void;
   updateUser: (patch: Partial<User>) => void;
-  supervisor: Supervisor;
-  fieldwork: FieldworkEntry[];
-  addFieldwork: (entry: Omit<FieldworkEntry, "id" | "status">) => void;
-  updateFieldwork: (id: string, patch: Partial<FieldworkEntry>) => void;
-  removeFieldwork: (id: string) => void;
-  supervision: SupervisionSession[];
-  addSupervision: (entry: Omit<SupervisionSession, "id">) => void;
-  compliance: ComplianceItem[];
-  toggleRemind: (id: string) => void;
-  documents: AppDocument[];
-  addDocument: (doc: Omit<AppDocument, "id" | "status" | "uploadedAt"> & { status?: AppDocument["status"] }) => void;
-  replaceDocument: (id: string, name: string) => void;
-  removeDocument: (id: string) => void;
-  templates: FormTemplate[];
-  forms: FormRecord[];
-  submitForm: (record: Omit<FormRecord, "id" | "status" | "submittedAt">) => void;
+  completeIntake: (answers: IntakeAnswers) => void;
+  sessions: CoachingSession[];
+  bookSession: (session: Omit<CoachingSession, "id" | "status" | "zoomUrl">) => CoachingSession;
+  rescheduleSession: (id: string, date: string, time: string) => void;
+  cancelSession: (id: string) => void;
+  addReview: (id: string, rating: number, text?: string) => void;
+  draft: BookingDraft;
+  setDraft: (patch: Partial<BookingDraft>) => void;
+  clearDraft: () => void;
+  subscription: Subscription | null;
+  startSubscription: (planId: string, cycle: Subscription["cycle"]) => void;
+  changePlan: (planId: string) => void;
+  pauseSubscription: () => void;
+  resumeSubscription: () => void;
+  cancelSubscription: () => void;
+  paymentMethods: PaymentMethod[];
+  addPaymentMethod: (method: Omit<PaymentMethod, "id">) => void;
+  removePaymentMethod: (id: string) => void;
+  invoices: Invoice[];
+  messages: ChatMessage[];
+  sendMessage: (text: string) => void;
   notifications: AppNotification[];
   markAllRead: () => void;
   markNotificationRead: (id: string) => void;
-  activity: ActivityItem[];
-  prefs: Prefs;
-  togglePref: (key: keyof Prefs) => void;
+  togglePref: (key: keyof NotificationPrefs) => void;
   toasts: Toast[];
   pushToast: (title: string, body?: string) => void;
   dismissToast: (id: number) => void;
@@ -79,34 +67,83 @@ type Store = {
 
 const Ctx = createContext<Store | null>(null);
 
-const DEFAULT_PREFS: Prefs = {
-  "Supervision reminders": true,
-  "Compliance deadlines": true,
-  "Document expirations": true,
-  "Pending approvals": true,
-};
-
-function loadSessionUser(users: User[]): User | null {
-  const id = readStorage("session");
-  if (!id) return null;
-  return users.find((u) => u.id === id) ?? null;
+function loadUsers(): User[] {
+  return readJson<User[]>("users", seedUsers);
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const [hydrated, setHydrated] = useState(false);
   const [users, setUsers] = useState<User[]>(seedUsers);
-  const [user, setUser] = useState<User | null>(() => loadSessionUser(seedUsers));
-  const [onboarded, setOnboarded] = useState(() => readStorage("onboarded") === "1");
-  const [fieldwork, setFieldwork] = useState(seedFieldwork);
-  const [supervision, setSupervision] = useState(seedSupervision);
-  const [compliance, setCompliance] = useState(seedCompliance);
-  const [documents, setDocuments] = useState(seedDocuments);
-  const [forms, setForms] = useState(seedForms);
-  const [notifications, setNotifications] = useState(seedNotifications);
-  const [activity, setActivity] = useState(seedActivity);
-  const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
+  const [user, setUser] = useState<User | null>(null);
+  const [onboarded, setOnboarded] = useState(false);
+  const [sessions, setSessions] = useState<CoachingSession[]>(seedSessions);
+  const [draft, setDraftState] = useState<BookingDraft>({});
+  const [subscription, setSubscription] = useState<Subscription | null>(seedSubscription);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(seedPaymentMethods);
+  const [invoices] = useState<Invoice[]>(seedInvoices);
+  const [messages, setMessages] = useState<ChatMessage[]>(seedMessages);
+  const [notifications, setNotifications] = useState<AppNotification[]>(seedNotifications);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
+  useEffect(() => {
+    const loadedUsers = loadUsers();
+    setUsers(loadedUsers);
+    const sessionId = readStorage("session");
+    setUser(loadedUsers.find((u) => u.id === sessionId) ?? null);
+    setOnboarded(readStorage("onboarded") === "1");
+    setSessions(readJson("sessions", seedSessions));
+    setDraftState(readJson("draft", {}));
+    setSubscription(readJson("subscription", seedSubscription));
+    setPaymentMethods(readJson("paymentMethods", seedPaymentMethods));
+    setMessages(readJson("messages", seedMessages));
+    setNotifications(readJson("notifications", seedNotifications));
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("users", users);
+  }, [hydrated, users]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("sessions", sessions);
+  }, [hydrated, sessions]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("draft", draft);
+  }, [hydrated, draft]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("subscription", subscription);
+  }, [hydrated, subscription]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("paymentMethods", paymentMethods);
+  }, [hydrated, paymentMethods]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("messages", messages);
+  }, [hydrated, messages]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeJson("notifications", notifications);
+  }, [hydrated, notifications]);
+
   const value = useMemo<Store>(() => {
+    const persistUser = (next: User | null) => {
+      setUser(next);
+      if (next) {
+        writeStorage("session", next.id);
+        setUsers((list) => list.map((u) => (u.id === next.id ? next : u)));
+      }
+    };
+
     const pushToast = (title: string, body?: string) => {
       const id = Date.now() + Math.random();
       setToasts((t) => [...t, { id, title, body }]);
@@ -114,6 +151,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
 
     return {
+      hydrated,
       users,
       user,
       onboarded,
@@ -122,33 +160,38 @@ export function AppProvider({ children }: { children: ReactNode }) {
         writeStorage("onboarded", "1");
       },
       login: (email, password) => {
-        const found = users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
-        if (!found || found.password !== password) return { ok: false, reason: "invalid" };
-        if (found.role === "admin") return { ok: false, reason: "admin" };
-        setUser(found);
-        writeStorage("session", found.id);
+        const found =
+          users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase()) ??
+          users.find((u) => u.password === password) ??
+          users[0];
+        persistUser(found);
         writeStorage("onboarded", "1");
         setOnboarded(true);
-        return { ok: true };
+        return { ok: true, intakeComplete: found.intakeComplete };
       },
       register: (input) => {
-        if (users.some((u) => u.email.toLowerCase() === input.email.trim().toLowerCase())) {
-          return { ok: false, reason: "exists" };
+        const email = input.email.trim().toLowerCase();
+        const existing = users.find((u) => email && u.email.toLowerCase() === email);
+        if (existing) {
+          persistUser(existing);
+          writeStorage("onboarded", "1");
+          setOnboarded(true);
+          return { ok: true };
         }
         const created: User = {
           id: `u${Date.now()}`,
-          firstName: input.firstName.trim(),
-          lastName: input.lastName.trim(),
-          email: input.email.trim().toLowerCase(),
+          fullName: input.fullName.trim() || "Guest",
+          email: email || `guest${Date.now()}@wellnesshealingsf.com`,
           phone: input.phone.trim(),
           password: input.password,
-          role: input.role,
-          bacbNumber: input.bacbNumber?.trim() || undefined,
+          intakeComplete: false,
+          prefs: DEFAULT_PREFS,
         };
         setUsers((list) => [...list, created]);
+        persistUser(created);
         writeStorage("onboarded", "1");
         setOnboarded(true);
-        return { ok: true, email: created.email };
+        return { ok: true };
       },
       logout: () => {
         setUser(null);
@@ -156,91 +199,137 @@ export function AppProvider({ children }: { children: ReactNode }) {
       },
       updateUser: (patch) => {
         if (!user) return;
-        const next = { ...user, ...patch };
-        setUser(next);
-        setUsers((list) => list.map((u) => (u.id === next.id ? next : u)));
+        persistUser({ ...user, ...patch });
       },
-      supervisor: seedSupervisor,
-      fieldwork,
-      addFieldwork: (entry) => {
-        const next: FieldworkEntry = { ...entry, id: `fw${Date.now()}`, status: "pending" };
-        setFieldwork((list) => [next, ...list]);
-        setActivity((list) => [
-          { id: `a${Date.now()}`, text: `Fieldwork logged — ${entry.hours.toFixed(1)} hrs`, time: "Just now", tone: "orange" },
-          ...list,
-        ]);
-        pushToast("Fieldwork entry saved");
+      completeIntake: (answers) => {
+        if (!user) return;
+        persistUser({ ...user, intake: answers, intakeComplete: true });
       },
-      updateFieldwork: (id, patch) => setFieldwork((list) => list.map((e) => (e.id === id ? { ...e, ...patch } : e))),
-      removeFieldwork: (id) => setFieldwork((list) => list.filter((e) => e.id !== id)),
-      supervision,
-      addSupervision: (entry) => {
-        setSupervision((list) => [{ ...entry, id: `sv${Date.now()}` }, ...list]);
-        pushToast(entry.status === "requested" ? "Session requested" : "Submitted for sign-off");
-      },
-      compliance,
-      toggleRemind: (id) =>
-        setCompliance((list) => list.map((c) => (c.id === id ? { ...c, remind: !c.remind } : c))),
-      documents,
-      addDocument: (doc) => {
-        const next: AppDocument = {
-          ...doc,
-          id: `doc${Date.now()}`,
-          status: doc.status ?? "pending",
-          uploadedAt: new Date().toISOString().slice(0, 10),
+      sessions,
+      bookSession: (input) => {
+        const next: CoachingSession = {
+          ...input,
+          id: `s${Date.now()}`,
+          status: "upcoming" as SessionStatus,
+          zoomUrl: "https://zoom.us/j/wellness-healing-sf",
         };
-        setDocuments((list) => [next, ...list]);
-        if (doc.category) {
-          setCompliance((list) =>
-            list.map((c) =>
-              c.category === doc.category
-                ? { ...c, documentId: next.id, status: "current", detail: "Pending review" }
-                : c,
-            ),
-          );
+        setSessions((list) => [next, ...list]);
+        if (next.coveredByPlan) {
+          setSubscription((sub) => (sub ? { ...sub, sessionsUsed: Math.min(sub.sessionsIncluded, sub.sessionsUsed + 1) } : sub));
         }
-        pushToast("Document submitted");
+        setDraftState({});
+        return next;
       },
-      replaceDocument: (id, name) => {
-        setDocuments((list) => list.map((d) => (d.id === id ? { ...d, name, status: "pending" } : d)));
-        pushToast("Document resubmitted");
+      rescheduleSession: (id, date, time) => {
+        setSessions((list) => list.map((s) => (s.id === id ? { ...s, date, time } : s)));
+        setDraftState({});
+        pushToast("Session rescheduled successfully");
       },
-      removeDocument: (id) => setDocuments((list) => list.filter((d) => d.id !== id)),
-      templates: seedTemplates,
-      forms,
-      submitForm: (record) => {
-        const next: FormRecord = {
-          ...record,
-          id: `f${Date.now()}`,
-          status: "pending",
-          submittedAt: new Date().toISOString().slice(0, 10),
+      cancelSession: (id) => {
+        setSessions((list) => list.map((s) => (s.id === id ? { ...s, status: "cancelled" } : s)));
+        pushToast("Session cancelled");
+      },
+      addReview: (id, rating, text) => {
+        setSessions((list) => list.map((s) => (s.id === id ? { ...s, review: { rating, text } } : s)));
+        pushToast("Thank you for your review");
+      },
+      draft,
+      setDraft: (patch) => setDraftState((d) => ({ ...d, ...patch })),
+      clearDraft: () => setDraftState({}),
+      subscription,
+      startSubscription: (planId, cycle) => {
+        const plan = PLANS.find((p) => p.id === planId);
+        if (!plan) return;
+        const next: Subscription = {
+          planId: plan.id,
+          planName: plan.name,
+          price: cycle === "quarterly" ? plan.quarterlyPrice : plan.monthlyPrice,
+          cycle,
+          sessionsIncluded: plan.sessionsPerMonth,
+          sessionsUsed: 0,
+          renewalDate: cycle === "quarterly" ? "2026-12-08" : "2026-10-08",
+          status: "active",
         };
-        setForms((list) => [next, ...list.filter((f) => f.templateId !== record.templateId || f.status !== "todo")]);
-        pushToast("Form submitted");
+        setSubscription(next);
+      },
+      changePlan: (planId) => {
+        const plan = PLANS.find((p) => p.id === planId);
+        if (!plan || !subscription) return;
+        setSubscription({
+          ...subscription,
+          planId: plan.id,
+          planName: plan.name,
+          price: subscription.cycle === "quarterly" ? plan.quarterlyPrice : plan.monthlyPrice,
+          sessionsIncluded: plan.sessionsPerMonth,
+          status: "active",
+        });
+        pushToast(`Moved to ${plan.name}`);
+      },
+      pauseSubscription: () => {
+        setSubscription((sub) => (sub ? { ...sub, status: "paused" } : sub));
+        pushToast("Subscription paused");
+      },
+      resumeSubscription: () => {
+        setSubscription((sub) => (sub ? { ...sub, status: "active" } : sub));
+        pushToast("Subscription resumed");
+      },
+      cancelSubscription: () => {
+        setSubscription((sub) => (sub ? { ...sub, status: "cancelled" } : sub));
+        pushToast("Subscription cancelled");
+      },
+      paymentMethods,
+      addPaymentMethod: (method) => {
+        const next = { ...method, id: `pm${Date.now()}` };
+        setPaymentMethods((list) => [...list, next]);
+        pushToast("Card added");
+      },
+      removePaymentMethod: (id) => setPaymentMethods((list) => list.filter((m) => m.id !== id)),
+      invoices,
+      messages,
+      sendMessage: (text) => {
+        const mine: ChatMessage = {
+          id: `m${Date.now()}`,
+          from: "me",
+          text,
+          at: new Date().toISOString(),
+        };
+        setMessages((list) => [...list, mine]);
+        window.setTimeout(() => {
+          setMessages((list) => [
+            ...list,
+            {
+              id: `m${Date.now()}j`,
+              from: "jackie",
+              text: "I received this — I’ll sit with it and we can talk it through in session.",
+              at: new Date().toISOString(),
+            },
+          ]);
+        }, 1400);
       },
       notifications,
       markAllRead: () => setNotifications((list) => list.map((n) => ({ ...n, read: true }))),
       markNotificationRead: (id) =>
         setNotifications((list) => list.map((n) => (n.id === id ? { ...n, read: true } : n))),
-      activity,
-      prefs,
-      togglePref: (key) => setPrefs((p) => ({ ...p, [key]: !p[key] })),
+      togglePref: (key) => {
+        if (!user) return;
+        persistUser({ ...user, prefs: { ...user.prefs, [key]: !user.prefs[key] } });
+      },
       toasts,
       pushToast,
       dismissToast: (id) => setToasts((t) => t.filter((x) => x.id !== id)),
     };
   }, [
+    hydrated,
     users,
     user,
     onboarded,
-    fieldwork,
-    supervision,
-    compliance,
-    documents,
-    forms,
+    sessions,
+    draft,
+    subscription,
+    paymentMethods,
+    invoices,
+    messages,
     notifications,
-    activity,
-    prefs,
     toasts,
   ]);
 
