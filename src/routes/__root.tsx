@@ -2,8 +2,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
+  Navigate,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,9 +15,18 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppProvider } from "../lib/store";
 import { AppShell } from "../components/AppShell";
+import { PhonePreview } from "../components/PhonePreview";
 import { asset } from "../lib/utils";
 
 function NotFoundComponent() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname }).toLowerCase();
+  if (pathname.includes("preview")) {
+    return <PhonePreview />;
+  }
+  if (pathname.includes("wellness-healing")) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-5">
       <div className="max-w-sm text-center">

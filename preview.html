@@ -280,19 +280,11 @@
   </div>
 
     <script>
-      const PRODUCTION_URL = "https://demo.sourapps.com/wellness-healing/";
-
     function defaultAppUrl() {
       if (location.protocol === "file:") {
-        return "http://localhost:5173/wellness-healing/";
+        return "http://localhost:8080/";
       }
-      if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-        return location.origin + "/wellness-healing/";
-      }
-      if (location.pathname.endsWith("preview.html")) {
-        return location.origin + location.pathname.replace(/preview\.html$/, "");
-      }
-      return PRODUCTION_URL;
+      return location.origin + "/";
     }
 
     function safeParseUrl(maybeUrl) {

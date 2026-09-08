@@ -4,10 +4,20 @@ import { Toaster } from "@/components/ui/sonner";
 import { shouldShowTabs, TabBar } from "@/components/TabBar";
 import { useApp } from "@/lib/store";
 
+function isPreviewPath(pathname: string) {
+  const path = pathname.replace(/\/$/, "") || "/";
+  return path === "/preview" || path === "/preview.html" || path.endsWith("/preview.html") || path.endsWith("/preview");
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { toasts, dismissToast } = useApp();
   const tabs = shouldShowTabs(pathname);
+  const preview = isPreviewPath(pathname);
+
+  if (preview) {
+    return <div className="min-h-dvh w-full bg-[#0b0b0c]">{children}</div>;
+  }
 
   return (
     <div className="mx-auto flex h-dvh max-h-dvh w-full max-w-[480px] flex-col overflow-hidden bg-background">

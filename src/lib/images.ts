@@ -13,6 +13,10 @@ import testimonialDaniel from "@/img/testimonial-daniel.png";
 import testimonialAsha from "@/img/testimonial-asha.png";
 import resourceJournal from "@/img/resource-journal.png";
 import resourcePlants from "@/img/resource-plants.png";
+import resourceBreath from "@/img/resource-breath.png";
+import resourceEvening from "@/img/resource-evening.png";
+import resourceBetween from "@/img/resource-between.png";
+import resourceLinen from "@/img/resource-linen.png";
 
 /** Editorial photography generated for the W&H SF visual system. */
 export const PHOTOS = {
@@ -22,11 +26,15 @@ export const PHOTOS = {
   duskLandscape: onboardingDusk,
   heroInterior: heroWindow,
   teaJournal: resourceJournal,
+  plants: resourcePlants,
+  breath: resourceBreath,
+  evening: resourceEvening,
+  between: resourceBetween,
+  linen: resourceLinen,
   jackie: coachJackie,
   testimonial1: testimonialMira,
   testimonial2: testimonialDaniel,
   testimonial3: testimonialAsha,
-  plants: resourcePlants,
   pillarTrauma,
   pillarMindful,
   pillarIndustry,

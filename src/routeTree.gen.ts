@@ -19,6 +19,8 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PaymentMethodsRouteImport } from './routes/payment-methods'
+import { Route as PreviewRouteImport } from './routes/preview'
+import { Route as PreviewDothtmlRouteImport } from './routes/preview[.]html'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RegisterRouteImport } from './routes/register'
@@ -40,6 +42,8 @@ import { Route as PlansCheckoutRouteImport } from './routes/plans/checkout'
 import { Route as PlansConfirmationRouteImport } from './routes/plans/confirmation'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
 import { Route as SessionsRescheduleRouteImport } from './routes/sessions/reschedule'
+import { Route as WellnessHealingIndexRouteImport } from './routes/wellness-healing/index'
+import { Route as WellnessHealingSplatRouteImport } from './routes/wellness-healing/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -89,6 +93,16 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const PaymentMethodsRoute = PaymentMethodsRouteImport.update({
   id: '/payment-methods',
   path: '/payment-methods',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewRoute = PreviewRouteImport.update({
+  id: '/preview',
+  path: '/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewDothtmlRoute = PreviewDothtmlRouteImport.update({
+  id: '/preview.html',
+  path: '/preview.html',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -196,6 +210,16 @@ const SessionsRescheduleRoute = SessionsRescheduleRouteImport.update({
   path: '/reschedule',
   getParentRoute: () => SessionsRoute,
 } as any)
+const WellnessHealingIndexRoute = WellnessHealingIndexRouteImport.update({
+  id: '/wellness-healing/',
+  path: '/wellness-healing/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WellnessHealingSplatRoute = WellnessHealingSplatRouteImport.update({
+  id: '/wellness-healing/$',
+  path: '/wellness-healing/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -208,6 +232,8 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
   '/payment-methods': typeof PaymentMethodsRoute
+  '/preview': typeof PreviewRoute
+  '/preview.html': typeof PreviewDothtmlRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
@@ -227,8 +253,10 @@ export interface FileRoutesByFullPath {
   '/plans/confirmation': typeof PlansConfirmationRoute
   '/profile/edit': typeof ProfileEditRoute
   '/sessions/reschedule': typeof SessionsRescheduleRoute
+  '/wellness-healing/$': typeof WellnessHealingSplatRoute
   '/book/': typeof BookIndexRoute
   '/plans/': typeof PlansIndexRoute
+  '/wellness-healing/': typeof WellnessHealingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -241,6 +269,8 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
   '/payment-methods': typeof PaymentMethodsRoute
+  '/preview': typeof PreviewRoute
+  '/preview.html': typeof PreviewDothtmlRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
@@ -260,8 +290,10 @@ export interface FileRoutesByTo {
   '/plans/confirmation': typeof PlansConfirmationRoute
   '/profile/edit': typeof ProfileEditRoute
   '/sessions/reschedule': typeof SessionsRescheduleRoute
+  '/wellness-healing/$': typeof WellnessHealingSplatRoute
   '/book': typeof BookIndexRoute
   '/plans': typeof PlansIndexRoute
+  '/wellness-healing': typeof WellnessHealingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -275,6 +307,8 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
   '/payment-methods': typeof PaymentMethodsRoute
+  '/preview': typeof PreviewRoute
+  '/preview.html': typeof PreviewDothtmlRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
@@ -294,8 +328,10 @@ export interface FileRoutesById {
   '/plans/confirmation': typeof PlansConfirmationRoute
   '/profile/edit': typeof ProfileEditRoute
   '/sessions/reschedule': typeof SessionsRescheduleRoute
+  '/wellness-healing/$': typeof WellnessHealingSplatRoute
   '/book/': typeof BookIndexRoute
   '/plans/': typeof PlansIndexRoute
+  '/wellness-healing/': typeof WellnessHealingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -310,6 +346,8 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/onboarding'
     | '/payment-methods'
+    | '/preview'
+    | '/preview.html'
     | '/privacy'
     | '/profile'
     | '/register'
@@ -329,8 +367,10 @@ export interface FileRouteTypes {
     | '/plans/confirmation'
     | '/profile/edit'
     | '/sessions/reschedule'
+    | '/wellness-healing/$'
     | '/book/'
     | '/plans/'
+    | '/wellness-healing/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -343,6 +383,8 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/onboarding'
     | '/payment-methods'
+    | '/preview'
+    | '/preview.html'
     | '/privacy'
     | '/profile'
     | '/register'
@@ -362,8 +404,10 @@ export interface FileRouteTypes {
     | '/plans/confirmation'
     | '/profile/edit'
     | '/sessions/reschedule'
+    | '/wellness-healing/$'
     | '/book'
     | '/plans'
+    | '/wellness-healing'
   id:
     | '__root__'
     | '/'
@@ -376,6 +420,8 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/onboarding'
     | '/payment-methods'
+    | '/preview'
+    | '/preview.html'
     | '/privacy'
     | '/profile'
     | '/register'
@@ -395,8 +441,10 @@ export interface FileRouteTypes {
     | '/plans/confirmation'
     | '/profile/edit'
     | '/sessions/reschedule'
+    | '/wellness-healing/$'
     | '/book/'
     | '/plans/'
+    | '/wellness-healing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -410,6 +458,8 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   OnboardingRoute: typeof OnboardingRoute
   PaymentMethodsRoute: typeof PaymentMethodsRoute
+  PreviewRoute: typeof PreviewRoute
+  PreviewDothtmlRoute: typeof PreviewDothtmlRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRouteWithChildren
   RegisterRoute: typeof RegisterRoute
@@ -426,8 +476,10 @@ export interface RootRouteChildren {
   BookTimeRoute: typeof BookTimeRoute
   PlansCheckoutRoute: typeof PlansCheckoutRoute
   PlansConfirmationRoute: typeof PlansConfirmationRoute
+  WellnessHealingSplatRoute: typeof WellnessHealingSplatRoute
   BookIndexRoute: typeof BookIndexRoute
   PlansIndexRoute: typeof PlansIndexRoute
+  WellnessHealingIndexRoute: typeof WellnessHealingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -500,6 +552,20 @@ declare module '@tanstack/react-router' {
       path: '/payment-methods'
       fullPath: '/payment-methods'
       preLoaderRoute: typeof PaymentMethodsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview': {
+      id: '/preview'
+      path: '/preview'
+      fullPath: '/preview'
+      preLoaderRoute: typeof PreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview.html': {
+      id: '/preview.html'
+      path: '/preview.html'
+      fullPath: '/preview.html'
+      preLoaderRoute: typeof PreviewDothtmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -649,6 +715,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SessionsRescheduleRouteImport
       parentRoute: typeof SessionsRoute
     }
+    '/wellness-healing/': {
+      id: '/wellness-healing/'
+      path: '/wellness-healing'
+      fullPath: '/wellness-healing/'
+      preLoaderRoute: typeof WellnessHealingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wellness-healing/$': {
+      id: '/wellness-healing/$'
+      path: '/wellness-healing/$'
+      fullPath: '/wellness-healing/$'
+      preLoaderRoute: typeof WellnessHealingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -698,6 +778,8 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   OnboardingRoute: OnboardingRoute,
   PaymentMethodsRoute: PaymentMethodsRoute,
+  PreviewRoute: PreviewRoute,
+  PreviewDothtmlRoute: PreviewDothtmlRoute,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRouteWithChildren,
   RegisterRoute: RegisterRoute,
@@ -714,8 +796,10 @@ const rootRouteChildren: RootRouteChildren = {
   BookTimeRoute: BookTimeRoute,
   PlansCheckoutRoute: PlansCheckoutRoute,
   PlansConfirmationRoute: PlansConfirmationRoute,
+  WellnessHealingSplatRoute: WellnessHealingSplatRoute,
   BookIndexRoute: BookIndexRoute,
   PlansIndexRoute: PlansIndexRoute,
+  WellnessHealingIndexRoute: WellnessHealingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
