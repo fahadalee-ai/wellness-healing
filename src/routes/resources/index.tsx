@@ -57,7 +57,7 @@ function ResourcesScreen() {
                 <div className="relative">
                   <img src={item.image} alt={item.alt} className="h-40 w-full object-cover" />
                   {savedResources.includes(item.id) && (
-                    <span className="absolute right-3 top-3 bg-[#2D2B29]/70 p-1.5 text-cream">
+                    <span className="absolute right-3 top-3 bg-[#141312]/70 p-1.5 text-cream">
                       <Bookmark size={14} fill="currentColor" />
                     </span>
                   )}

@@ -36,12 +36,12 @@ function OnboardingScreen() {
       }}
     >
       <img src={slide.image} alt={slide.alt} className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-[#2D2B29]/70" />
+      <div className="absolute inset-0 bg-[#141312]/70" />
 
       <button
         type="button"
         onClick={finish}
-        className="absolute right-5 top-[max(1.25rem,env(safe-area-inset-top))] z-10 text-[12px] uppercase tracking-[0.16em] text-cream/80"
+        className="absolute right-5 top-[max(1.25rem,env(safe-area-inset-top))] z-10 inline-flex min-h-10 items-center border border-white bg-[#141312]/75 px-4 text-[12px] uppercase tracking-[0.16em] text-white"
       >
         Skip
       </button>
@@ -67,15 +67,6 @@ function OnboardingScreen() {
         <Button className="mt-6" full onClick={() => (last ? finish() : setStep((s) => s + 1))}>
           {last ? "Get Started" : "Next"}
         </Button>
-
-        {last && (
-          <p className="mt-4 text-center text-sm text-cream/80">
-            Already have an account?{" "}
-            <button type="button" onClick={finish} className="text-primary">
-              Log In
-            </button>
-          </p>
-        )}
       </div>
     </div>
   );

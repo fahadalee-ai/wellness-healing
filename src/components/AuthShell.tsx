@@ -31,14 +31,14 @@ export function AuthShell({
   return (
     <div className="relative min-h-dvh overflow-hidden bg-background">
       <img src={background} alt="" className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-[#2D2B29]/78" />
+      <div className="absolute inset-0 bg-[#141312]/78" />
       <div className="relative z-10 min-h-dvh overflow-y-auto no-scrollbar px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
         {showBack ? (
           <button
             type="button"
             aria-label="Go back"
             onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: "/onboarding" }))}
-            className="mb-4 flex h-12 w-12 items-center justify-center border border-cream/25 bg-[#2D2B29]/40 text-foreground"
+            className="mb-4 flex h-12 w-12 items-center justify-center border border-cream/25 bg-[#141312]/40 text-foreground"
           >
             <ArrowLeft size={18} strokeWidth={1.75} />
           </button>
@@ -74,7 +74,7 @@ export function AuthInput({
       {icon && (
         <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">{icon}</span>
       )}
-      <input {...props} className={cn(inputClass, "bg-[#2D2B29]/70", icon && "pl-10", className)} />
+      <input {...props} className={cn(inputClass, "bg-[#141312]/70", icon && "pl-10", className)} />
     </div>
   );
 }
@@ -114,7 +114,7 @@ export function SocialAuth({ onContinue }: { onContinue: () => void }) {
         <button
           type="button"
           onClick={onContinue}
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-cream/25 bg-[#2D2B29]/50 px-3 text-sm text-foreground hover:bg-[#2D2B29]/70"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-cream/25 bg-[#141312]/50 px-3 text-sm text-foreground hover:bg-[#141312]/70"
         >
           <GoogleMark />
           Google
@@ -122,7 +122,7 @@ export function SocialAuth({ onContinue }: { onContinue: () => void }) {
         <button
           type="button"
           onClick={onContinue}
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-cream/25 bg-[#2D2B29]/50 px-3 text-sm text-foreground hover:bg-[#2D2B29]/70"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-cream/25 bg-[#141312]/50 px-3 text-sm text-foreground hover:bg-[#141312]/70"
         >
           <AppleMark />
           Apple

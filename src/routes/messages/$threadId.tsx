@@ -120,7 +120,7 @@ function ChatScreen() {
                     <Link
                       to="/resources/$resourceId"
                       params={{ resourceId: resource.id }}
-                      className="mt-2 block border border-primary-foreground/25 bg-[#2D2B29]/20 p-2"
+                      className="mt-2 block border border-primary-foreground/25 bg-[#141312]/20 p-2"
                     >
                       <p className="text-[10px] uppercase tracking-[0.14em] opacity-80">{resource.category}</p>
                       <p className="mt-1 font-medium">{resource.title}</p>

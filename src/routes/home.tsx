@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Bell, BookOpen, CalendarPlus, CreditCard, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Button, Card, LinkButton, Screen, SectionTitle, Stars } from "@/components/kit";
-import { Logo } from "@/components/Logo";
 import { PHOTOS } from "@/lib/images";
 import {
   canJoinZoom,
@@ -10,7 +9,6 @@ import {
   formatDate,
   formatTime,
   greeting,
-  initials,
   PILLARS,
   RESOURCES,
   SERVICES,
@@ -40,39 +38,26 @@ function HomeScreen() {
 
   return (
     <Screen tabPad className="pt-[max(1rem,env(safe-area-inset-top))]">
-      <div className="flex items-center justify-between">
-        <Logo className="h-12 w-12" />
-        <div className="flex items-center gap-2">
-          <Link
-            to="/notifications"
-            aria-label="Notifications"
-            className="relative flex h-12 w-12 items-center justify-center border border-border"
-          >
-            <Bell size={18} strokeWidth={1.6} />
-            {unread && <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 bg-primary" />}
-          </Link>
-          <Link
-            to="/profile"
-            aria-label="Profile"
-            className="flex h-12 w-12 items-center justify-center overflow-hidden border border-border bg-card text-[11px] tracking-wide"
-          >
-            {user?.avatar ? (
-              <img src={user.avatar} alt="" className="h-full w-full object-cover" />
-            ) : (
-              initials(user?.fullName ?? "WH")
-            )}
-          </Link>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="font-display text-[1.35rem] leading-tight text-foreground">
+            {greeting()}, {name}
+          </p>
+          <p className="mt-1 text-sm text-cream">Here’s your space to grow</p>
         </div>
+        <Link
+          to="/notifications"
+          aria-label="Notifications"
+          className="relative flex h-12 w-12 shrink-0 items-center justify-center border border-white text-white"
+        >
+          <Bell size={20} strokeWidth={1.75} />
+          {unread && <span className="absolute right-2 top-2 h-1.5 w-1.5 bg-primary" />}
+        </Link>
       </div>
-
-      <p className="mt-6 font-display text-[1.85rem] text-foreground">
-        {greeting()}, {name}
-      </p>
-      <p className="mt-1 text-sm text-muted-foreground">Here’s your space to grow</p>
 
       <div className="relative mt-6 overflow-hidden rounded-[4px]">
         <img src={PHOTOS.heroInterior} alt="Woman seated on a sunroom window ledge" className="h-52 w-full object-cover" />
-        <div className="absolute inset-0 bg-[#2D2B29]/55" />
+        <div className="absolute inset-0 bg-[#141312]/55" />
         <div className="absolute inset-0 flex flex-col justify-end p-4">
           <h2 className="font-display text-xl leading-snug text-cream">
             A Path Toward Healing, Clarity & Transformation
@@ -90,15 +75,15 @@ function HomeScreen() {
           <p className="mt-1 text-sm text-muted-foreground">
             with {upcoming.coachName} · {formatDate(upcoming.date)} at {formatTime(upcoming.time)}
           </p>
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4 grid grid-cols-2 gap-2">
             <a
               href={canJoinZoom(upcoming.date, upcoming.time, upcoming.durationMin) ? upcoming.zoomUrl : undefined}
               target="_blank"
               rel="noreferrer"
-              className={`inline-flex min-h-12 flex-1 items-center justify-center text-[12px] uppercase tracking-[0.16em] ${
+              className={`inline-flex min-h-12 items-center justify-center text-[12px] font-medium uppercase tracking-[0.16em] ${
                 canJoinZoom(upcoming.date, upcoming.time, upcoming.durationMin)
                   ? "bg-primary text-primary-foreground"
-                  : "pointer-events-none bg-muted text-muted-foreground"
+                  : "pointer-events-none bg-primary/70 text-primary-foreground"
               }`}
             >
               Join Zoom
@@ -106,7 +91,7 @@ function HomeScreen() {
             <Link
               to="/sessions/reschedule"
               search={{ id: upcoming.id }}
-              className="inline-flex min-h-12 items-center px-3 text-[12px] uppercase tracking-[0.14em] text-primary"
+              className="inline-flex min-h-12 items-center justify-center border border-white bg-transparent text-[12px] font-medium uppercase tracking-[0.16em] text-white"
             >
               Reschedule
             </Link>
@@ -141,7 +126,9 @@ function HomeScreen() {
               <p className="font-medium text-foreground">{service.title}</p>
               <p className="mt-1 text-xs text-muted-foreground">{service.blurb}</p>
             </div>
-            <span className="ml-3 text-[11px] uppercase tracking-[0.14em] text-primary">Book Now</span>
+            <span className="ml-3 shrink-0 bg-primary px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-primary-foreground">
+              Book Now
+            </span>
           </Card>
         ))}
       </div>

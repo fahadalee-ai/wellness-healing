@@ -22,7 +22,7 @@ export function PhonePreview() {
     <div className="grid-bg flex min-h-dvh items-center justify-center overflow-hidden bg-[#0b0b0c] p-4">
       <div className="relative aspect-[9/19.5] h-[min(86vh,700px)] w-[min(92vw,340px)]">
         <div className="absolute inset-0 rounded-[42px] bg-black shadow-[0_18px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/15" />
-        <div className="absolute inset-[10px] overflow-hidden rounded-[34px] bg-[#2D2B29]">
+        <div className="absolute inset-[10px] overflow-hidden rounded-[34px] bg-[#141312]">
           <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-3 text-[13px] font-semibold text-white">
             <span>{time}</span>
             <span className="absolute left-1/2 top-2 h-6 w-[88px] -translate-x-1/2 rounded-full bg-black" />
@@ -31,7 +31,7 @@ export function PhonePreview() {
           <iframe
             title="Wellness & Healing SF"
             src={appSrc()}
-            className="h-full w-full border-0 bg-[#2D2B29]"
+            className="h-full w-full border-0 bg-[#141312]"
           />
           <div className="pointer-events-none absolute inset-x-0 bottom-2 z-10 flex justify-center">
             <span className="h-1 w-28 rounded-full bg-white/50" />

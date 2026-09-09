@@ -39,9 +39,9 @@ function SplashScreen() {
         alt="Sunroom window with plants and warm daylight"
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-[#2D2B29]/72" />
+      <div className="absolute inset-0 bg-[#141312]/72" />
       <div className="relative z-10 animate-splash flex flex-col items-center">
-        <Logo className="h-44 w-44" />
+        <Logo className="h-64 w-64" />
         <Wordmark className="mt-3" />
       </div>
     </button>

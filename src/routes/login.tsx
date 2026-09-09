@@ -67,12 +67,13 @@ function LoginScreen() {
         }}
       />
 
-      <p className="mt-8 text-center text-sm text-muted-foreground">
-        Don’t have an account?{" "}
-        <Link to="/register" className="text-primary">
-          Sign Up
-        </Link>
-      </p>
+      <p className="mt-8 text-center text-sm text-cream">Don’t have an account?</p>
+      <Link
+        to="/register"
+        className="mt-2 inline-flex min-h-12 w-full items-center justify-center border border-white bg-[#141312]/70 px-4 text-[12px] font-medium uppercase tracking-[0.16em] text-white"
+      >
+        Sign Up
+      </Link>
     </AuthShell>
   );
 }

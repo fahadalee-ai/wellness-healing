@@ -136,6 +136,10 @@ function SessionsScreen() {
         </div>
       )}
 
+      <LinkButton to="/home" variant="soft" full className="mt-6">
+        Back to Home
+      </LinkButton>
+
       <BottomSheet open={!!cancelId} onClose={() => setCancelId(null)} title="Cancel This Session?">
         <p className="text-sm leading-relaxed text-muted-foreground">
           Sessions cancelled less than 24 hours in advance are non-refundable. If you need to shift the time, rescheduling is

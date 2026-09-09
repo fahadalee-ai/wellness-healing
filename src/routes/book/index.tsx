@@ -15,7 +15,7 @@ function ServiceSelectScreen() {
 
   return (
     <Screen tabPad className="pt-0">
-      <Header title="Choose the Support That Fits You" back fallbackTo="/home" />
+      <Header title="Choose the Support That Fits You" back={false} />
       <FadeIn>
         <div className="space-y-3">
           {SERVICES.map((service) => {
