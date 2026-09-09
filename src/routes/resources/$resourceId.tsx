@@ -31,7 +31,7 @@ function ResourceDetailScreen() {
   const related = resource.related.map(resourceById).filter(Boolean);
 
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header
         title={resource.title}
         fallbackTo="/resources"

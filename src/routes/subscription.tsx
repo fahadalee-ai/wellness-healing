@@ -16,7 +16,7 @@ function SubscriptionScreen() {
 
   if (!subscription || subscription.status === "cancelled") {
     return (
-      <Screen className="pt-0">
+      <Screen tabPad className="pt-0">
         <Header title="My Subscription" fallbackTo="/profile" />
         <p className="text-sm leading-relaxed text-muted-foreground">
           You don’t have an active plan. Ongoing support is available whenever it feels right.
@@ -29,7 +29,7 @@ function SubscriptionScreen() {
   }
 
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header title="My Subscription" fallbackTo="/profile" />
       <Card>
         <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">

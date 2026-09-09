@@ -8,6 +8,7 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
+import { canJoinZoom } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 export function Screen({
@@ -97,8 +98,9 @@ export function Button({
   return (
     <button
       {...props}
+      aria-disabled={props.disabled || undefined}
       className={cn(
-        "inline-flex min-h-12 items-center justify-center gap-2 rounded-none px-4 py-3 text-[12px] font-medium uppercase tracking-[0.16em] transition-colors duration-200 disabled:opacity-40",
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-none px-4 py-3 text-[12px] font-medium uppercase tracking-[0.16em] transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-40",
         styles,
         full && "w-full",
         className,
@@ -333,22 +335,105 @@ export function BottomSheet({
   title: string;
   children: ReactNode;
 }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    closeRef.current?.focus();
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/70" onClick={onClose}>
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-[480px] border-t border-border bg-card p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
       >
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-2xl text-foreground">{title}</h3>
-          <button type="button" aria-label="Close" onClick={onClose} className="p-2 text-muted-foreground">
+          <button
+            ref={closeRef}
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            className="flex h-12 w-12 items-center justify-center text-muted-foreground"
+          >
             <X size={18} />
           </button>
         </div>
         {children}
       </div>
     </div>
+  );
+}
+
+export function PageDots({
+  count,
+  index,
+  onChange,
+  label,
+}: {
+  count: number;
+  index: number;
+  onChange: (i: number) => void;
+  label: string;
+}) {
+  return (
+    <div className="flex justify-center gap-0.5">
+      {Array.from({ length: count }, (_, i) => (
+        <button
+          key={i}
+          type="button"
+          aria-label={`${label} ${i + 1}`}
+          aria-current={i === index}
+          onClick={() => onChange(i)}
+          className="flex h-11 w-11 items-center justify-center"
+        >
+          <span className={cn("block h-1.5 transition-all duration-300", i === index ? "w-5 bg-primary" : "w-1.5 bg-cream/40")} />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export function JoinZoomButton({
+  date,
+  time,
+  durationMin,
+  href,
+  className,
+}: {
+  date: string;
+  time: string;
+  durationMin: number;
+  href: string;
+  className?: string;
+}) {
+  const open = canJoinZoom(date, time, durationMin);
+  const cls = cn(
+    "inline-flex min-h-12 items-center justify-center text-[12px] font-medium uppercase tracking-[0.16em]",
+    open ? "bg-primary text-primary-foreground" : "cursor-not-allowed bg-muted text-muted-foreground",
+    className,
+  );
+  if (open) {
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className={cls}>
+        Join Zoom
+      </a>
+    );
+  }
+  return (
+    <button type="button" disabled aria-disabled="true" className={cls}>
+      Join Zoom
+    </button>
   );
 }
 
@@ -370,7 +455,7 @@ export function Stars({ rating, size = 14 }: { rating: number; size?: number }) 
           <span
             key={i}
             style={{ width: size, height: size }}
-            className={cn("mr-0.5 inline-block", i < Math.round(rating) ? "bg-primary" : "bg-border")}
+            className={cn("mr-0.5 inline-block", i < Math.round(rating) ? "bg-primary" : "bg-muted")}
           />
         ))}
       </span>

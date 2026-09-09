@@ -8,7 +8,7 @@ export const Route = createFileRoute("/terms")({
 
 function TermsScreen() {
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header title="Terms of Service" fallbackTo="/register" />
       <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
         <p>

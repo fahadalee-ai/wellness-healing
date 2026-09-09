@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button, Card, FadeIn, Header, Input, Screen } from "@/components/kit";
+import { remainingPlanSessions, sessionCoveredByPlan } from "@/lib/booking";
 import { COACH, formatDateLong, formatTime, moneyExact, serviceById } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 
@@ -13,7 +14,7 @@ function ReviewScreen() {
   const { draft, subscription, setDraft, bookSession } = useApp();
   const navigate = useNavigate();
   const service = draft.serviceId ? serviceById(draft.serviceId) : null;
-  const covered = subscription?.status === "active" && draft.serviceId === "one-on-one";
+  const covered = sessionCoveredByPlan(subscription, draft.serviceId);
   const duration = draft.firstSession ? (service?.durationMin ?? 50) + 15 : (service?.durationMin ?? 50);
   const [promoOpen, setPromoOpen] = useState(!!draft.promo);
   const promo = draft.promo?.toUpperCase() === "HEAL10";
@@ -61,8 +62,9 @@ function ReviewScreen() {
         <Card className="mt-4">
           {covered && subscription ? (
             <p className="text-sm leading-relaxed text-cream">
-              Covered by {subscription.planName} — {subscription.sessionsUsed + 1} of {subscription.sessionsIncluded}{" "}
-              sessions this month
+              {draft.serviceId === "one-on-one"
+                ? `Covered by ${subscription.planName} — ${subscription.sessionsUsed + 1} of ${subscription.sessionsIncluded} private sessions this month`
+                : `Covered by ${subscription.planName} — group sessions are included. ${remainingPlanSessions(subscription)} private sessions remain.`}
             </p>
           ) : (
             <div className="space-y-2 text-sm">

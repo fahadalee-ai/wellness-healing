@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button, Card, FadeIn, Header, SaveLater, Screen } from "@/components/kit";
-import { money, SERVICES } from "@/lib/mock-data";
+import { coverageLabel } from "@/lib/booking";
+import { SERVICES } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/book/")({
@@ -19,7 +20,6 @@ function ServiceSelectScreen() {
       <FadeIn>
         <div className="space-y-3">
           {SERVICES.map((service) => {
-            const covered = subscription?.status === "active" && service.id === "one-on-one";
             return (
               <Card
                 key={service.id}
@@ -28,9 +28,7 @@ function ServiceSelectScreen() {
               >
                 <p className="font-display text-xl">{service.title}</p>
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{service.blurb}</p>
-                <p className="mt-3 text-sm text-primary">
-                  {covered ? "Included in Subscription" : `${money(service.price)} / session`}
-                </p>
+                <p className="mt-3 text-sm text-primary">{coverageLabel(subscription, service.id, service.price)}</p>
               </Card>
             );
           })}

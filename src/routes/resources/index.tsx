@@ -19,7 +19,7 @@ function ResourcesScreen() {
   const items = resourcesByCategory(filter, savedResources);
 
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header title="Resources" subtitle="Quiet tools for the days in between" fallbackTo="/home" />
       <div className="mb-5 flex gap-2 overflow-x-auto no-scrollbar">
         {FILTERS.map((item) => (

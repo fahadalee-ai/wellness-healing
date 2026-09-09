@@ -17,7 +17,7 @@ function PlansScreen() {
   const { setDraft } = useApp();
 
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header title="Choose Your Plan" subtitle="Ongoing support, priced for consistency" fallbackTo="/home" />
       <FadeIn>
         <div className="mb-6 grid grid-cols-2 border border-border">

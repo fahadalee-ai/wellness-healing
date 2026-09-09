@@ -7,11 +7,13 @@ import { cn } from "@/lib/utils";
 export function PaymentMethodList({
   selectedId,
   onSelect,
+  allowRemove,
 }: {
   selectedId?: string;
   onSelect: (id: string) => void;
+  allowRemove?: boolean;
 }) {
-  const { paymentMethods, addPaymentMethod } = useApp();
+  const { paymentMethods, addPaymentMethod, removePaymentMethod } = useApp();
   const [adding, setAdding] = useState(false);
   const [card, setCard] = useState("");
   const [expiry, setExpiry] = useState("");
@@ -22,20 +24,29 @@ export function PaymentMethodList({
     <div>
       <div className="space-y-2">
         {paymentMethods.map((method) => (
-          <button
+          <div
             key={method.id}
-            type="button"
-            onClick={() => onSelect(method.id)}
             className={cn(
-              "flex min-h-12 w-full items-center justify-between border px-4 py-3 text-left",
+              "flex min-h-12 w-full items-center gap-2 border px-4 py-3",
               selectedId === method.id ? "border-primary bg-primary/10" : "border-border bg-card",
             )}
           >
-            <span className="text-sm">
-              {method.brand} ···· {method.last4}
-            </span>
-            <span className="text-xs text-muted-foreground">{method.expiry}</span>
-          </button>
+            <button type="button" onClick={() => onSelect(method.id)} className="min-w-0 flex-1 text-left">
+              <span className="block text-sm">
+                {method.brand} ···· {method.last4}
+              </span>
+              <span className="text-xs text-muted-foreground">{method.expiry}</span>
+            </button>
+            {allowRemove && (
+              <button
+                type="button"
+                onClick={() => removePaymentMethod(method.id)}
+                className="min-h-12 shrink-0 px-2 text-[11px] uppercase tracking-[0.12em] text-muted-foreground"
+              >
+                Remove
+              </button>
+            )}
+          </div>
         ))}
       </div>
 

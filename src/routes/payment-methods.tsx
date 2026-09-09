@@ -14,9 +14,9 @@ function PaymentMethodsScreen() {
   const [selected, setSelected] = useState(paymentMethods[0]?.id);
 
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header title="Payment Methods" fallbackTo="/profile" />
-      <PaymentMethodList selectedId={selected} onSelect={setSelected} />
+      <PaymentMethodList selectedId={selected} onSelect={setSelected} allowRemove />
     </Screen>
   );
 }

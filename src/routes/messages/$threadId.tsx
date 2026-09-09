@@ -71,7 +71,7 @@ function ChatScreen() {
   }
 
   return (
-    <Screen padded={false} className="flex h-dvh max-h-dvh flex-col overflow-hidden">
+    <Screen padded={false} tabPad className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <div className="px-5">
         <Header
           title={thread.title}
@@ -143,7 +143,13 @@ function ChatScreen() {
 
         {typing && (
           <div className="flex justify-start">
-            <div className="bg-card px-3 py-2 text-sm text-muted-foreground">Jackie is writing…</div>
+            <div className="bg-card px-3 py-2 text-sm text-muted-foreground">
+              {thread.kind === "coach"
+                ? "Jackie is writing…"
+                : thread.kind === "studio"
+                  ? "Studio is writing…"
+                  : "A note is arriving…"}
+            </div>
           </div>
         )}
       </div>

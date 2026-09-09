@@ -27,6 +27,7 @@ function LoginScreen() {
       subtitle="Log in to continue your journey"
       background={PHOTOS.windowPortrait}
       logoClassName="h-36 w-36"
+      fallbackTo="/onboarding"
     >
       <form
         noValidate

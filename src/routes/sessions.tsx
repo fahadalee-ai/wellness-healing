@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { BottomSheet, Button, Card, Empty, Header, LinkButton, Screen, Stars } from "@/components/kit";
+import { BottomSheet, Button, Card, Empty, Header, JoinZoomButton, LinkButton, Screen, Stars } from "@/components/kit";
+import { isWithinCancelWindow } from "@/lib/booking";
 import {
   canJoinZoom,
   formatDate,
@@ -28,6 +29,9 @@ function SessionsScreen() {
 
   const key = tab.toLowerCase() as CoachingSession["status"];
   const list = sessions.filter((s) => s.status === key);
+  const hasPast = sessions.some((s) => s.status === "past");
+  const cancelTarget = sessions.find((s) => s.id === cancelId);
+  const lateCancel = cancelTarget ? isWithinCancelWindow(cancelTarget.date, cancelTarget.time) : false;
 
   return (
     <Screen tabPad className="pt-0">
@@ -55,7 +59,7 @@ function SessionsScreen() {
           action={
             tab === "Upcoming" ? (
               <LinkButton to="/book" full>
-                Book Your First Session
+                {hasPast ? "Book a Session" : "Book Your First Session"}
               </LinkButton>
             ) : undefined
           }
@@ -77,19 +81,13 @@ function SessionsScreen() {
                 {session.status === "upcoming" && (
                   <>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      <a
-                        href={canJoinZoom(session.date, session.time, session.durationMin) ? session.zoomUrl : undefined}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={cn(
-                          "inline-flex min-h-12 flex-1 items-center justify-center text-[12px] uppercase tracking-[0.14em]",
-                          canJoinZoom(session.date, session.time, session.durationMin)
-                            ? "bg-primary text-primary-foreground"
-                            : "pointer-events-none bg-muted text-muted-foreground",
-                        )}
-                      >
-                        Join Zoom
-                      </a>
+                      <JoinZoomButton
+                        className="flex-1"
+                        date={session.date}
+                        time={session.time}
+                        durationMin={session.durationMin}
+                        href={session.zoomUrl}
+                      />
                       <Link
                         to="/sessions/reschedule"
                         search={{ id: session.id }}
@@ -149,8 +147,9 @@ function SessionsScreen() {
 
       <BottomSheet open={!!cancelId} onClose={() => setCancelId(null)} title="Cancel This Session?">
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Sessions cancelled less than 24 hours in advance are non-refundable. If you need to shift the time, rescheduling is
-          often gentler.
+          {lateCancel
+            ? "This is inside 24 hours. You can still cancel, but a plan session will not be returned."
+            : "Cancelled with more than 24 hours’ notice, a covered plan session returns to this month. If you need to shift the time, rescheduling is often gentler."}
         </p>
         <div className="mt-6 space-y-2">
           <Button full variant="outline" onClick={() => setCancelId(null)}>
@@ -176,7 +175,7 @@ function SessionsScreen() {
               key={n}
               type="button"
               onClick={() => setRating(n)}
-              className={cn("h-10 w-10", n <= rating ? "bg-primary" : "bg-border")}
+              className={cn("h-11 w-11", n <= rating ? "bg-primary" : "bg-muted")}
               aria-label={`${n} stars`}
             />
           ))}

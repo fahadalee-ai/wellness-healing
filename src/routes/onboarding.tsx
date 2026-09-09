@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Button } from "@/components/kit";
+import { Button, PageDots } from "@/components/kit";
 import { ONBOARDING } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({ meta: [{ title: "Welcome — Wellness & Healing SF" }] }),
@@ -41,7 +40,7 @@ function OnboardingScreen() {
       <button
         type="button"
         onClick={finish}
-        className="absolute right-5 top-[max(1.25rem,env(safe-area-inset-top))] z-10 inline-flex min-h-10 items-center border border-white bg-[#141312]/75 px-4 text-[12px] uppercase tracking-[0.16em] text-white"
+        className="absolute right-5 top-[max(1.25rem,env(safe-area-inset-top))] z-10 inline-flex min-h-12 items-center border border-white bg-[#141312]/75 px-4 text-[12px] uppercase tracking-[0.16em] text-white"
       >
         Skip
       </button>
@@ -52,17 +51,7 @@ function OnboardingScreen() {
           <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-cream/80">{slide.subtext}</p>
         </div>
 
-        <div className="mt-8 flex items-center justify-center gap-2">
-          {ONBOARDING.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Go to slide ${i + 1}`}
-              onClick={() => setStep(i)}
-              className={cn("h-1.5 transition-all duration-300", i === step ? "w-6 bg-primary" : "w-1.5 bg-cream/35")}
-            />
-          ))}
-        </div>
+        <PageDots count={ONBOARDING.length} index={step} onChange={setStep} label="Go to slide" />
 
         <Button className="mt-6" full onClick={() => (last ? finish() : setStep((s) => s + 1))}>
           {last ? "Get Started" : "Next"}

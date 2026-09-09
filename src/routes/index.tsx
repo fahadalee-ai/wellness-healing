@@ -22,20 +22,21 @@ function SplashScreen() {
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready) return undefined;
     if (!hydrated) {
       const fallback = window.setTimeout(() => navigate({ to: "/onboarding" }), 600);
       return () => window.clearTimeout(fallback);
     }
     if (user) {
       navigate({ to: user.intakeComplete ? "/home" : "/intake" });
-      return;
+      return undefined;
     }
     if (onboarded) {
       navigate({ to: "/login" });
-      return;
+      return undefined;
     }
     navigate({ to: "/onboarding" });
+    return undefined;
   }, [ready, hydrated, user, onboarded, navigate]);
 
   function advance() {
@@ -57,6 +58,9 @@ function SplashScreen() {
       <div className="relative z-10 animate-splash flex flex-col items-center">
         <Logo className="h-64 w-64" />
         <Wordmark className="mt-3" />
+        {ready && !hydrated && (
+          <p className="mt-6 text-[12px] uppercase tracking-[0.16em] text-cream/80">Opening your space…</p>
+        )}
       </div>
     </button>
   );

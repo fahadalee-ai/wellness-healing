@@ -19,18 +19,9 @@ function RegisterScreen() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [agreed, setAgreed] = useState(false);
-  const [error, setError] = useState("");
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (password && confirm && password !== confirm) {
-      setError("Those passwords don’t match yet.");
-      return;
-    }
-    if (!agreed) {
-      setError("Please agree to the Terms and Privacy Policy to continue.");
-      return;
-    }
     register({ fullName, email, phone, password });
     navigate({ to: "/intake" });
   }
@@ -53,14 +44,7 @@ function RegisterScreen() {
           <AuthInput type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(505) 000-0000" />
         </Field>
         <PasswordField label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <PasswordField
-          label="Confirm Password"
-          value={confirm}
-          onChange={(e) => {
-            setConfirm(e.target.value);
-            setError("");
-          }}
-        />
+        <PasswordField label="Confirm Password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
 
         <label className="mb-5 flex items-start gap-3 text-sm leading-relaxed text-cream">
           <input
@@ -81,8 +65,7 @@ function RegisterScreen() {
           </span>
         </label>
 
-        {error && <p className="mb-3 text-sm text-warning">{error}</p>}
-        <Button type="submit" full disabled={!agreed}>
+        <Button type="submit" full>
           Create Account
         </Button>
         <p className="mt-3 text-center text-xs leading-relaxed text-cream/80">

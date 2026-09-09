@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Bell, BookOpen, CalendarPlus, CreditCard, MessageCircle } from "lucide-react";
 import { useState } from "react";
-import { Button, Card, LinkButton, Screen, SectionTitle, Stars } from "@/components/kit";
+import { Button, Card, JoinZoomButton, LinkButton, PageDots, Screen, SectionTitle, Stars } from "@/components/kit";
+import { resumeBookingTo } from "@/lib/booking";
 import { PHOTOS } from "@/lib/images";
 import {
   canJoinZoom,
@@ -68,8 +69,16 @@ function HomeScreen() {
         </div>
       </div>
 
+      {user && !user.intakeComplete && (
+        <Card className="mt-5" onClick={() => navigate({ to: "/intake" })}>
+          <p className="text-[11px] uppercase tracking-[0.16em] text-primary">A few questions remain</p>
+          <p className="mt-2 font-display text-xl">Continue when you’re ready</p>
+          <p className="mt-1 text-sm text-muted-foreground">Your answers are saved. Nothing here is required to book.</p>
+        </Card>
+      )}
+
       {(draft.serviceId || draft.date || draft.time) && (
-        <Card className="mt-5" onClick={() => navigate({ to: "/book" })}>
+        <Card className="mt-5" onClick={() => navigate(resumeBookingTo(draft))}>
           <p className="text-[11px] uppercase tracking-[0.16em] text-primary">Continue your booking</p>
           <p className="mt-2 font-display text-xl">You left a session in progress</p>
           <p className="mt-1 text-sm text-muted-foreground">Pick up where you paused — nothing is booked yet.</p>
@@ -84,18 +93,12 @@ function HomeScreen() {
             with {upcoming.coachName} · {formatDate(upcoming.date)} at {formatTime(upcoming.time)}
           </p>
           <div className="mt-4 grid grid-cols-2 gap-2">
-            <a
-              href={canJoinZoom(upcoming.date, upcoming.time, upcoming.durationMin) ? upcoming.zoomUrl : undefined}
-              target="_blank"
-              rel="noreferrer"
-              className={`inline-flex min-h-12 items-center justify-center text-[12px] font-medium uppercase tracking-[0.16em] ${
-                canJoinZoom(upcoming.date, upcoming.time, upcoming.durationMin)
-                  ? "bg-primary text-primary-foreground"
-                  : "pointer-events-none bg-primary/70 text-primary-foreground"
-              }`}
-            >
-              Join Zoom
-            </a>
+            <JoinZoomButton
+              date={upcoming.date}
+              time={upcoming.time}
+              durationMin={upcoming.durationMin}
+              href={upcoming.zoomUrl}
+            />
             <Link
               to="/sessions/reschedule"
               search={{ id: upcoming.id }}
@@ -151,7 +154,7 @@ function HomeScreen() {
       <div className="grid grid-cols-2 gap-2">
         {PILLARS.map((p) => (
           <Card key={p.title} className="overflow-hidden p-0">
-            <img src={p.image} alt="" className="h-28 w-full object-cover" />
+            <img src={p.image} alt={p.title} className="h-28 w-full object-cover" />
             <div className="p-3">
               <p className="text-sm font-medium text-foreground">{p.title}</p>
               <p className="mt-1 text-xs text-muted-foreground">{p.blurb}</p>
@@ -176,7 +179,7 @@ function HomeScreen() {
       >
         <Card>
           <div className="flex items-center gap-3">
-            <img src={TESTIMONIALS[quote].photo} alt="" className="h-12 w-12 object-cover" />
+            <img src={TESTIMONIALS[quote].photo} alt={TESTIMONIALS[quote].name} className="h-12 w-12 object-cover" />
             <div>
               <p className="text-sm font-medium">{TESTIMONIALS[quote].name}</p>
               <Stars rating={TESTIMONIALS[quote].rating} />
@@ -184,17 +187,7 @@ function HomeScreen() {
           </div>
           <p className="mt-3 text-sm leading-relaxed text-cream/90">“{TESTIMONIALS[quote].quote}”</p>
         </Card>
-        <div className="mt-3 flex justify-center gap-1.5">
-          {TESTIMONIALS.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Testimonial ${i + 1}`}
-              onClick={() => setQuote(i)}
-              className={`h-1.5 ${i === quote ? "w-5 bg-primary" : "w-1.5 bg-border"}`}
-            />
-          ))}
-        </div>
+        <PageDots count={TESTIMONIALS.length} index={quote} onChange={setQuote} label="Testimonial" />
       </div>
 
       <SectionTitle

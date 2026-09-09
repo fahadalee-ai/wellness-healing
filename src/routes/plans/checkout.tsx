@@ -19,11 +19,12 @@ export const Route = createFileRoute("/plans/checkout")({
 function PlanCheckoutScreen() {
   const { plan: planId, cycle } = Route.useSearch();
   const plan = planById(planId ?? "growth") ?? planById("growth")!;
-  const { paymentMethods, startSubscription } = useApp();
+  const { paymentMethods, startSubscription, changePlan, subscription } = useApp();
   const navigate = useNavigate();
   const [methodId, setMethodId] = useState(paymentMethods[0]?.id);
   const [agreed, setAgreed] = useState(false);
   const price = cycle === "quarterly" ? plan.quarterlyPrice : plan.monthlyPrice;
+  const existing = !!subscription && subscription.status !== "cancelled";
 
   return (
     <Screen className="pt-0">
@@ -59,11 +60,12 @@ function PlanCheckoutScreen() {
           full
           disabled={!agreed || !methodId}
           onClick={() => {
-            startSubscription(plan.id, cycle ?? "monthly");
-            navigate({ to: "/plans/confirmation", search: { plan: plan.id } });
+            if (existing) changePlan(plan.id, cycle ?? "monthly");
+            else startSubscription(plan.id, cycle ?? "monthly");
+            navigate({ to: "/plans/confirmation", search: { plan: plan.id, changed: existing } });
           }}
         >
-          Start Subscription
+          {existing ? "Confirm Plan Change" : "Start Subscription"}
         </Button>
         <SecureNote />
       </FadeIn>

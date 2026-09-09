@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { LanguagePicker, type LanguageId } from "@/components/LanguagePicker";
 import { Button, Field, Header, Input, Screen } from "@/components/kit";
 import { PasswordField } from "@/components/AuthShell";
 import { useApp } from "@/lib/store";
@@ -24,8 +25,14 @@ function EditProfileScreen() {
   ];
 
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header title="Edit Profile" fallbackTo="/profile" />
+      <Field label="Language">
+        <LanguagePicker
+          value={user?.language ?? "en"}
+          onChange={(id: LanguageId) => updateUser({ language: id })}
+        />
+      </Field>
       <Field label="Name">
         <Input value={name} onChange={(e) => setName(e.target.value)} />
       </Field>
@@ -48,6 +55,8 @@ function EditProfileScreen() {
           <button
             key={p.key}
             type="button"
+            role="switch"
+            aria-checked={!!user?.prefs[p.key]}
             onClick={() => togglePref(p.key)}
             className="flex min-h-12 w-full items-center justify-between px-4 py-3 text-left"
           >

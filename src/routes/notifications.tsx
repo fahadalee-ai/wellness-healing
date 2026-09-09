@@ -12,7 +12,7 @@ function NotificationsScreen() {
   const { notifications, markAllRead, markNotificationRead } = useApp();
 
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header
         title="Notifications"
         fallbackTo="/home"

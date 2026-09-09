@@ -24,7 +24,7 @@ const FAQS = [
 
 function HelpScreen() {
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header title="Help & Support" fallbackTo="/profile" />
       <Card>
         <p className="font-display text-xl">{BUSINESS.name}</p>

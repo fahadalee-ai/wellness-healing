@@ -15,6 +15,7 @@ export function AuthShell({
   showLogo = true,
   logoClassName = "h-20 w-20",
   background = PHOTOS.windowPortrait,
+  fallbackTo = "/login",
 }: {
   title: string;
   subtitle?: string;
@@ -24,6 +25,7 @@ export function AuthShell({
   showLogo?: boolean;
   logoClassName?: string;
   background?: string;
+  fallbackTo?: "/login" | "/onboarding";
 }) {
   const router = useRouter();
   const canGoBack = useCanGoBack();
@@ -37,7 +39,7 @@ export function AuthShell({
           <button
             type="button"
             aria-label="Go back"
-            onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: "/onboarding" }))}
+            onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: fallbackTo }))}
             className="mb-4 flex h-12 w-12 items-center justify-center border border-cream/25 bg-[#141312]/40 text-foreground"
           >
             <ArrowLeft size={18} strokeWidth={1.75} />

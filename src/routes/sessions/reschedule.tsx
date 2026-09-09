@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useState } from "react";
 import { DatePicker, TimeSlotPicker } from "@/components/booking";
 import { Button, FadeIn, Header, Screen } from "@/components/kit";
 import { formatDate, formatTime } from "@/lib/mock-data";
@@ -17,13 +17,11 @@ export const Route = createFileRoute("/sessions/reschedule")({
 
 function RescheduleScreen() {
   const { id } = Route.useSearch();
-  const { sessions, draft, setDraft, rescheduleSession } = useApp();
+  const { sessions, rescheduleSession } = useApp();
   const navigate = useNavigate();
   const session = sessions.find((s) => s.id === id);
-
-  useEffect(() => {
-    if (id) setDraft({ rescheduleId: id, date: undefined, time: undefined });
-  }, [id, setDraft]);
+  const [date, setDate] = useState<string>();
+  const [time, setTime] = useState<string>();
 
   if (!session) {
     return (
@@ -44,24 +42,24 @@ function RescheduleScreen() {
           </p>
           <p className="mt-1 text-foreground">Choose a new time that feels right.</p>
         </div>
-        <DatePicker value={draft.date} onChange={(date) => setDraft({ date, time: undefined })} />
-        {draft.date && (
+        <DatePicker value={date} onChange={(next) => { setDate(next); setTime(undefined); }} />
+        {date && (
           <div className="mt-8">
             <TimeSlotPicker
-              date={draft.date}
-              value={draft.time}
+              date={date}
+              value={time}
               durationMin={session.durationMin}
-              onChange={(time) => setDraft({ time })}
+              onChange={setTime}
             />
           </div>
         )}
         <Button
           className="mt-8"
           full
-          disabled={!draft.date || !draft.time}
+          disabled={!date || !time}
           onClick={() => {
-            if (!draft.date || !draft.time) return;
-            rescheduleSession(session.id, draft.date, draft.time);
+            if (!date || !time) return;
+            rescheduleSession(session.id, date, time);
             navigate({ to: "/sessions" });
           }}
         >

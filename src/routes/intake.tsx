@@ -12,13 +12,13 @@ export const Route = createFileRoute("/intake")({
 });
 
 function IntakeScreen() {
-  const { completeIntake } = useApp();
+  const { user, completeIntake, saveIntakeDraft } = useApp();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [reason, setReason] = useState("");
-  const [background, setBackground] = useState("");
-  const [support, setSupport] = useState<string[]>([]);
-  const [referral, setReferral] = useState("");
+  const [reason, setReason] = useState(user?.intake?.reason ?? "");
+  const [background, setBackground] = useState(user?.intake?.background ?? "");
+  const [support, setSupport] = useState<string[]>(user?.intake?.support ?? []);
+  const [referral, setReferral] = useState(user?.intake?.referral ?? "");
 
   const total = 4;
   const optional = step === 1 || step === 3;
@@ -113,8 +113,11 @@ function IntakeScreen() {
         )}
         <button
           type="button"
-          onClick={finish}
-          className="mt-1 w-full py-3 text-center text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
+          onClick={() => {
+            saveIntakeDraft({ reason, background, support, referral });
+            navigate({ to: "/home" });
+          }}
+          className="mt-1 min-h-12 w-full py-3 text-center text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
         >
           Leave for later
         </button>

@@ -7,6 +7,7 @@ import {
   HelpCircle,
   LogOut,
   MessageCircle,
+  ScrollText,
   Shield,
   Wallet,
 } from "lucide-react";
@@ -51,6 +52,7 @@ function ProfileScreen() {
         <Row icon={<MessageCircle size={18} />} label="Messages" to="/messages" />
         <Row icon={<BookOpen size={18} />} label="Resources" to="/resources" />
         <Row icon={<HelpCircle size={18} />} label="Help & Support" to="/help" />
+        <Row icon={<ScrollText size={18} />} label="Terms of Service" to="/terms" />
         <Row icon={<Shield size={18} />} label="Privacy Policy" to="/privacy" />
         <Row
           icon={<LogOut size={18} />}

@@ -37,6 +37,7 @@ export type User = {
   avatar?: string;
   intakeComplete: boolean;
   intake?: IntakeAnswers;
+  language?: "en" | "es";
   prefs: NotificationPrefs;
 };
 
@@ -317,6 +318,7 @@ export const seedUsers: User[] = [
     phone: "(310) 555-0188",
     password: "Healing1",
     avatar: PHOTOS.testimonial1,
+    language: "en",
     intakeComplete: true,
     intake: {
       reason: "Both",

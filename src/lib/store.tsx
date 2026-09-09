@@ -23,6 +23,7 @@ import {
   type Subscription,
   type User,
 } from "./mock-data";
+import { isWithinCancelWindow } from "./booking";
 import { normalizeMessages, replyFor } from "./chat";
 
 export type Toast = { id: number; title: string; body?: string };
@@ -38,7 +39,9 @@ type Store = {
   logout: () => void;
   updateUser: (patch: Partial<User>) => void;
   completeIntake: (answers: IntakeAnswers) => void;
+  saveIntakeDraft: (answers: IntakeAnswers) => void;
   sessions: CoachingSession[];
+  lastBookedSessionId: string | null;
   bookSession: (session: Omit<CoachingSession, "id" | "status" | "zoomUrl">) => CoachingSession;
   rescheduleSession: (id: string, date: string, time: string) => void;
   cancelSession: (id: string) => void;
@@ -48,7 +51,7 @@ type Store = {
   clearDraft: () => void;
   subscription: Subscription | null;
   startSubscription: (planId: string, cycle: Subscription["cycle"]) => void;
-  changePlan: (planId: string) => void;
+  changePlan: (planId: string, cycle?: Subscription["cycle"]) => void;
   pauseSubscription: () => void;
   resumeSubscription: () => void;
   cancelSubscription: () => void;
@@ -93,6 +96,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [completedPractices, setCompletedPractices] = useState<string[]>([]);
   const [notifications, setNotifications] = useState<AppNotification[]>(seedNotifications);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [lastBookedSessionId, setLastBookedSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     const loadedUsers = loadUsers();
@@ -205,6 +209,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           email: email || `guest${Date.now()}@wellnesshealingsf.com`,
           phone: input.phone.trim(),
           password: input.password,
+          language: "en",
           intakeComplete: false,
           prefs: DEFAULT_PREFS,
         };
@@ -226,6 +231,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (!user) return;
         persistUser({ ...user, intake: answers, intakeComplete: true });
       },
+      saveIntakeDraft: (answers) => {
+        if (!user) return;
+        persistUser({ ...user, intake: answers, intakeComplete: false });
+      },
+      lastBookedSessionId,
       sessions,
       bookSession: (input) => {
         const next: CoachingSession = {
@@ -235,19 +245,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
           zoomUrl: "https://zoom.us/j/wellness-healing-sf",
         };
         setSessions((list) => [next, ...list]);
-        if (next.coveredByPlan) {
-          setSubscription((sub) => (sub ? { ...sub, sessionsUsed: Math.min(sub.sessionsIncluded, sub.sessionsUsed + 1) } : sub));
+        setLastBookedSessionId(next.id);
+        if (next.coveredByPlan && next.serviceId === "one-on-one") {
+          setSubscription((sub) =>
+            sub ? { ...sub, sessionsUsed: Math.min(sub.sessionsIncluded, sub.sessionsUsed + 1) } : sub,
+          );
         }
         setDraftState({});
         return next;
       },
       rescheduleSession: (id, date, time) => {
         setSessions((list) => list.map((s) => (s.id === id ? { ...s, date, time } : s)));
-        setDraftState({});
         pushToast("Session rescheduled successfully");
       },
       cancelSession: (id) => {
+        const session = sessions.find((s) => s.id === id);
         setSessions((list) => list.map((s) => (s.id === id ? { ...s, status: "cancelled" } : s)));
+        if (
+          session?.coveredByPlan &&
+          session.serviceId === "one-on-one" &&
+          !isWithinCancelWindow(session.date, session.time)
+        ) {
+          setSubscription((sub) => (sub ? { ...sub, sessionsUsed: Math.max(0, sub.sessionsUsed - 1) } : sub));
+        }
         pushToast("Session cancelled");
       },
       addReview: (id, rating, text) => {
@@ -273,15 +293,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
         };
         setSubscription(next);
       },
-      changePlan: (planId) => {
+      changePlan: (planId, cycle) => {
         const plan = PLANS.find((p) => p.id === planId);
         if (!plan || !subscription) return;
+        const nextCycle = cycle ?? subscription.cycle;
         setSubscription({
           ...subscription,
           planId: plan.id,
           planName: plan.name,
-          price: subscription.cycle === "quarterly" ? plan.quarterlyPrice : plan.monthlyPrice,
+          cycle: nextCycle,
+          price: nextCycle === "quarterly" ? plan.quarterlyPrice : plan.monthlyPrice,
           sessionsIncluded: plan.sessionsPerMonth,
+          sessionsUsed: Math.min(subscription.sessionsUsed, plan.sessionsPerMonth),
           status: "active",
         });
         pushToast(`Moved to ${plan.name}`);
@@ -376,6 +399,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     completedPractices,
     notifications,
     toasts,
+    lastBookedSessionId,
   ]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

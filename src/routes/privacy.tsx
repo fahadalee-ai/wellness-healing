@@ -8,7 +8,7 @@ export const Route = createFileRoute("/privacy")({
 
 function PrivacyScreen() {
   return (
-    <Screen className="pt-0">
+    <Screen tabPad className="pt-0">
       <Header title="Privacy Policy" fallbackTo="/profile" />
       <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
         <p>
