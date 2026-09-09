@@ -75,35 +75,42 @@ function SessionsScreen() {
                 </p>
 
                 {session.status === "upcoming" && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <a
-                      href={canJoinZoom(session.date, session.time, session.durationMin) ? session.zoomUrl : undefined}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={cn(
-                        "inline-flex min-h-12 flex-1 items-center justify-center text-[12px] uppercase tracking-[0.14em]",
-                        canJoinZoom(session.date, session.time, session.durationMin)
-                          ? "bg-primary text-primary-foreground"
-                          : "pointer-events-none bg-muted text-muted-foreground",
-                      )}
-                    >
-                      Join Zoom
-                    </a>
-                    <Link
-                      to="/sessions/reschedule"
-                      search={{ id: session.id }}
-                      className="inline-flex min-h-12 items-center px-3 text-[12px] uppercase tracking-[0.14em] text-primary"
-                    >
-                      Reschedule
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => setCancelId(session.id)}
-                      className="inline-flex min-h-12 items-center px-3 text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                  <>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <a
+                        href={canJoinZoom(session.date, session.time, session.durationMin) ? session.zoomUrl : undefined}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={cn(
+                          "inline-flex min-h-12 flex-1 items-center justify-center text-[12px] uppercase tracking-[0.14em]",
+                          canJoinZoom(session.date, session.time, session.durationMin)
+                            ? "bg-primary text-primary-foreground"
+                            : "pointer-events-none bg-muted text-muted-foreground",
+                        )}
+                      >
+                        Join Zoom
+                      </a>
+                      <Link
+                        to="/sessions/reschedule"
+                        search={{ id: session.id }}
+                        className="inline-flex min-h-12 items-center px-3 text-[12px] uppercase tracking-[0.14em] text-primary"
+                      >
+                        Reschedule
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setCancelId(session.id)}
+                        className="inline-flex min-h-12 items-center px-3 text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                    {!canJoinZoom(session.date, session.time, session.durationMin) && (
+                      <p className="mt-3 text-xs leading-relaxed text-cream">
+                        Join Zoom opens 15 minutes before your session.
+                      </p>
+                    )}
+                  </>
                 )}
 
                 {session.status === "past" && (

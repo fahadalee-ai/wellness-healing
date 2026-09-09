@@ -114,18 +114,24 @@ export function SocialAuth({ onContinue }: { onContinue: () => void }) {
         <button
           type="button"
           onClick={onContinue}
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-cream/25 bg-[#141312]/50 px-3 text-sm text-foreground hover:bg-[#141312]/70"
+          className="inline-flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-none border border-cream/25 bg-[#141312]/50 px-3 text-sm text-foreground hover:bg-[#141312]/70"
         >
-          <GoogleMark />
-          Google
+          <span className="inline-flex items-center gap-2">
+            <GoogleMark />
+            Google
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.14em] text-cream/70">Demo</span>
         </button>
         <button
           type="button"
           onClick={onContinue}
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-cream/25 bg-[#141312]/50 px-3 text-sm text-foreground hover:bg-[#141312]/70"
+          className="inline-flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-none border border-cream/25 bg-[#141312]/50 px-3 text-sm text-foreground hover:bg-[#141312]/70"
         >
-          <AppleMark />
-          Apple
+          <span className="inline-flex items-center gap-2">
+            <AppleMark />
+            Apple
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.14em] text-cream/70">Demo</span>
         </button>
       </div>
     </>

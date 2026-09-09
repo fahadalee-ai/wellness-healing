@@ -20,7 +20,7 @@ function PlanConfirmationScreen() {
     <div className="min-h-dvh bg-background px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(2rem,env(safe-area-inset-top))]">
       <SuccessState
         heading={`Welcome to ${plan.name}`}
-        subtext="Your first session is on us to book — let’s get started"
+        subtext="Your plan is active. Book a session whenever the time feels right — included 1:1 sessions are covered."
       >
         <LinkButton to="/book" full>
           Book Your First Session

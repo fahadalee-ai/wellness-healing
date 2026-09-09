@@ -29,7 +29,7 @@ const QUICK = [
 ] as const;
 
 function HomeScreen() {
-  const { user, sessions, notifications } = useApp();
+  const { user, sessions, notifications, draft, setDraft } = useApp();
   const navigate = useNavigate();
   const name = firstName(user?.fullName ?? "there");
   const upcoming = sessions.find((s) => s.status === "upcoming");
@@ -68,6 +68,14 @@ function HomeScreen() {
         </div>
       </div>
 
+      {(draft.serviceId || draft.date || draft.time) && (
+        <Card className="mt-5" onClick={() => navigate({ to: "/book" })}>
+          <p className="text-[11px] uppercase tracking-[0.16em] text-primary">Continue your booking</p>
+          <p className="mt-2 font-display text-xl">You left a session in progress</p>
+          <p className="mt-1 text-sm text-muted-foreground">Pick up where you paused — nothing is booked yet.</p>
+        </Card>
+      )}
+
       {upcoming && (
         <Card className="mt-5">
           <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Upcoming session</p>
@@ -96,6 +104,11 @@ function HomeScreen() {
               Reschedule
             </Link>
           </div>
+          {!canJoinZoom(upcoming.date, upcoming.time, upcoming.durationMin) && (
+            <p className="mt-3 text-xs leading-relaxed text-cream">
+              Join Zoom opens 15 minutes before your session.
+            </p>
+          )}
         </Card>
       )}
 
@@ -118,6 +131,7 @@ function HomeScreen() {
           <Card
             key={service.id}
             onClick={() => {
+              setDraft({ serviceId: service.id, durationMin: service.durationMin });
               navigate({ to: "/book" });
             }}
             className="flex items-center justify-between"

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download } from "lucide-react";
 import { useState } from "react";
 import { BottomSheet, Button, Card, Header, LinkButton, ProgressBar, Screen } from "@/components/kit";
 import { formatDate, money } from "@/lib/mock-data";
@@ -77,10 +76,7 @@ function SubscriptionScreen() {
               <p className="text-sm">{inv.label}</p>
               <p className="text-xs text-muted-foreground">{formatDate(inv.date)}</p>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm">{money(inv.amount)}</span>
-              <Download size={16} className="text-muted-foreground" />
-            </div>
+            <span className="text-sm">{money(inv.amount)}</span>
           </div>
         ))}
       </div>

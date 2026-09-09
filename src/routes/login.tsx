@@ -59,6 +59,9 @@ function LoginScreen() {
         <Button type="submit" full>
           Log In
         </Button>
+        <p className="mt-3 text-center text-xs leading-relaxed text-cream/80">
+          Demo — any details continue
+        </p>
       </form>
 
       <SocialAuth

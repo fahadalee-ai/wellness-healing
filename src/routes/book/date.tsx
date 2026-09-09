@@ -16,6 +16,11 @@ function DateScreen() {
     <Screen className="pt-0">
       <Header title="Pick a Date" fallbackTo="/book" />
       <FadeIn>
+        {draft.serviceId && draft.serviceId !== "one-on-one" && (
+          <p className="mb-4 text-sm leading-relaxed text-cream">
+            Group sessions skip a focus step — Jackie sets the room for everyone.
+          </p>
+        )}
         <DatePicker value={draft.date} onChange={(date) => setDraft({ date, time: undefined })} />
         <Button className="mt-8" full disabled={!draft.date} onClick={() => navigate({ to: "/book/time" })}>
           Continue

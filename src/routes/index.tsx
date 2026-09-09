@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Logo, Wordmark } from "@/components/Logo";
 import { PHOTOS } from "@/lib/images";
+import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/")({
 
 function SplashScreen() {
   const navigate = useNavigate();
+  const { hydrated, user, onboarded } = useApp();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -21,8 +23,20 @@ function SplashScreen() {
 
   useEffect(() => {
     if (!ready) return;
+    if (!hydrated) {
+      const fallback = window.setTimeout(() => navigate({ to: "/onboarding" }), 600);
+      return () => window.clearTimeout(fallback);
+    }
+    if (user) {
+      navigate({ to: user.intakeComplete ? "/home" : "/intake" });
+      return;
+    }
+    if (onboarded) {
+      navigate({ to: "/login" });
+      return;
+    }
     navigate({ to: "/onboarding" });
-  }, [ready, navigate]);
+  }, [ready, hydrated, user, onboarded, navigate]);
 
   function advance() {
     setReady(true);

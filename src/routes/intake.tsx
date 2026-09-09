@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { Button, FadeIn, MenuSelect, ProgressBar } from "@/components/kit";
-import { INTAKE_BACKGROUNDS, INTAKE_REASONS, INTAKE_REFERRALS, INTAKE_SUPPORT } from "@/lib/mock-data";
+import { BUSINESS, INTAKE_BACKGROUNDS, INTAKE_REASONS, INTAKE_REFERRALS, INTAKE_SUPPORT } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -20,26 +21,43 @@ function IntakeScreen() {
   const [referral, setReferral] = useState("");
 
   const total = 4;
+  const optional = step === 1 || step === 3;
   const canContinue =
     (step === 0 && !!reason) ||
     step === 1 ||
     (step === 2 && support.length > 0) ||
     step === 3;
 
+  function finish() {
+    completeIntake({ reason, background, support, referral });
+    navigate({ to: "/home" });
+  }
+
   function next() {
     if (step < total - 1) {
       setStep((s) => s + 1);
       return;
     }
-    completeIntake({ reason, background, support, referral });
-    navigate({ to: "/home" });
+    finish();
   }
 
   return (
     <div className="min-h-dvh overflow-visible bg-background px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
-      <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-        {step + 1} of {total}
-      </p>
+      <div className="flex items-center gap-3">
+        {step > 0 && (
+          <button
+            type="button"
+            aria-label="Go back"
+            onClick={() => setStep((s) => s - 1)}
+            className="flex h-12 w-12 items-center justify-center border border-white text-white"
+          >
+            <ArrowLeft size={18} strokeWidth={1.75} />
+          </button>
+        )}
+        <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          {step + 1} of {total}
+        </p>
+      </div>
       <div className="mt-3">
         <ProgressBar value={step + 1} max={total} />
       </div>
@@ -48,6 +66,12 @@ function IntakeScreen() {
         {step === 0 && (
           <Question title="What brings you here today?">
             <ChoiceList options={INTAKE_REASONS} value={reason} onChange={setReason} />
+            {reason === "Personal/Trauma Healing" && (
+              <p className="mt-4 text-sm leading-relaxed text-cream">
+                This is coaching, not a crisis line. If you are in danger, call {BUSINESS.phone} or local
+                emergency services.
+              </p>
+            )}
           </Question>
         )}
         {step === 1 && (
@@ -78,15 +102,22 @@ function IntakeScreen() {
         <Button full disabled={!canContinue} onClick={next}>
           {step === total - 1 ? "Continue to Home" : "Continue"}
         </Button>
-        {step === 1 && (
+        {optional && (
           <button
             type="button"
             onClick={next}
-            className="mt-3 w-full py-3 text-center text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
+            className="mt-3 w-full py-3 text-center text-[12px] uppercase tracking-[0.14em] text-cream"
           >
             Skip
           </button>
         )}
+        <button
+          type="button"
+          onClick={finish}
+          className="mt-1 w-full py-3 text-center text-[12px] uppercase tracking-[0.14em] text-muted-foreground"
+        >
+          Leave for later
+        </button>
       </div>
     </div>
   );
@@ -104,7 +135,7 @@ function Question({
   return (
     <>
       <h1 className="font-display text-[1.85rem] leading-tight text-foreground">{title}</h1>
-      {optional && <p className="mt-2 text-sm text-muted-foreground">Optional — skip if you’d rather not say.</p>}
+      {optional && <p className="mt-2 text-sm text-cream">Optional — skip if you’d rather not say.</p>}
       <div className="mt-6">{children}</div>
     </>
   );

@@ -53,6 +53,8 @@ function ReviewScreen() {
           <Row label="Date" value={draft.date ? formatDateLong(draft.date) : "—"} />
           <Row label="Time" value={draft.time ? formatTime(draft.time) : "—"} />
           <Row label="Duration" value={`${duration} min`} />
+          {draft.firstSession && <Row label="First session" value="15 extra minutes, no extra cost" />}
+          {draft.notes && <Row label="Notes" value={draft.notes} />}
           <Row label="Format" value="Zoom — link sent after confirmation" last />
         </Card>
 
@@ -100,6 +102,9 @@ function ReviewScreen() {
             value={draft.promo ?? ""}
             onChange={(e) => setDraft({ promo: e.target.value })}
           />
+        )}
+        {promoOpen && !!draft.promo && !promo && (
+          <p className="mt-2 text-xs text-muted-foreground">That code isn’t active.</p>
         )}
 
         <Button className="mt-8" full onClick={confirm} disabled={!draft.date || !draft.time}>
